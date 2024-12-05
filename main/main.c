@@ -5,6 +5,8 @@
 #include "ICM42688_Barsotion.h"
 #include "ICM42688_Interface.h"
 
+#include "pin_defs.h"
+
 ICM42688_t hicm;
 
 
@@ -24,7 +26,7 @@ void app_main(void)
 		.gyro.odr = GYRO_ODR_2KHZ,
 	};
     
-    ICM42688_spiInit();
+    ICM42688_spiInit(MISO_PINNUM, MOSI_PINNUM, CLK_PINNUM, CS_PINNUM);
     //ICM42688_Init(&hicm, &icm_cfg);
     hicm.read_reg = ICM42688_readRegister;
     
@@ -34,6 +36,6 @@ void app_main(void)
 		uint8_t dummy;
 		hicm.read_reg(ICM_0_WHO_AM_I, &dummy);
 		printf(" %02X\n", dummy);
-		vTaskDelay(1000);
+		vTaskDelay(10);
 	}
 }

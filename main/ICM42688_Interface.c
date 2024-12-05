@@ -6,12 +6,12 @@ spi_device_handle_t icm_dev;
 spi_transaction_t icm_2byte_trans;
 
 
-void ICM42688_spiInit()
+void ICM42688_spiInit(int miso, int mosi, int sck, int cs)
 {
 	spi_bus_config_t buscfg = {0};
-	buscfg.miso_io_num = MISO_PINNUM;
-    buscfg.mosi_io_num = MOSI_PINNUM;
-    buscfg.sclk_io_num = CLK_PINNUM;
+	buscfg.miso_io_num = miso;
+    buscfg.mosi_io_num = mosi;
+    buscfg.sclk_io_num = sck;
     buscfg.quadwp_io_num = -1;
     buscfg.quadhd_io_num = -1;
     buscfg.max_transfer_sz = 262;
@@ -22,7 +22,7 @@ void ICM42688_spiInit()
     memset(&icm_devcfg, 0, sizeof(spi_device_interface_config_t));
     icm_devcfg.clock_speed_hz = 1000000;
     icm_devcfg.mode = 0;
-    icm_devcfg.spics_io_num = CS_PINNUM;
+    icm_devcfg.spics_io_num = cs;
     icm_devcfg.command_bits = 8;
     icm_devcfg.address_bits = 0;
     icm_devcfg.dummy_bits = 0;
