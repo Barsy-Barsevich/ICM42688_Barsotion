@@ -8,9 +8,7 @@
 
 #include "ICM42688_RegMap.h"
 
-#include "pin_defs.h"
 
-
-void ICM42688_spiInit();
+void ICM42688_spiInit(int miso, int mosi, int sck, int cs);
 void ICM42688_readRegister(uint8_t reg, uint8_t *buf);
 void ICM42688_writeRegister(uint8_t reg, uint8_t data);
