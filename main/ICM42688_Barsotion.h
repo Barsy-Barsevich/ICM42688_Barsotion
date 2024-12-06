@@ -70,8 +70,8 @@ typedef struct __ICM42688_Descriptor
     ICM42688_Filter_t gyro_y_filter;
     ICM42688_Filter_t gyro_z_filter;
     
-    void (*write_reg) (uint8_t addr, uint8_t data);
-    void (*read_reg) (uint8_t reg, uint8_t *buf);
+    void (*writeRegister) (uint8_t addr, uint8_t data);
+    void (*readRegister) (uint8_t reg, uint8_t *buf);
 } ICM42688_t;
 
 
@@ -81,8 +81,7 @@ typedef struct __ICM42688_Descriptor
 
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg);
-void ICM42688_readGyro(ICM42688_t *hicm);
-void ICM42688_readAccel(ICM42688_t *hicm);
+void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw);
 
 void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw);
 void ICM42688_filterGyro(ICM42688_t *hicm);
