@@ -12,6 +12,19 @@
 
 typedef struct __ICM42688_CONFIG
 {
+	struct __SPI {
+		int miso_pin;
+		int mosi_pin;
+		int sck_pin;
+		int cs_pin;
+		spi_host_device_t host;
+		int sck_freq;
+	} spi;
+	struct __I2C {
+		int scl_pin;
+		int sda_pin;
+		uint8_t address;
+	} i2c;
 	struct {
 		ICM42688_ACCEL_ENABLE_t enable;
 		ICM42688_ACCEL_MODE_t mode;

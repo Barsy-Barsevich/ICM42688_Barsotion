@@ -1,12 +1,13 @@
 #include "ICM42688_Barsotion.h"
-#include "ICM42688_RegMap.h"
 
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 {
-	/*  */
+	/* SPI init */
 	hicm->writeRegister = ICM42688_SPI_writeRegister;
 	hicm->readRegister = ICM42688_SPI_readRegister;
+	ICM42688_SPI_InterfaceInit(cfg->spi.host, cfg->spi.miso_pin,
+		 cfg->spi.mosi_pin, cfg->spi.sck_pin, cfg->spi.cs_pin, cfg->spi.sck_freq);
 	
 	//Сделать по умолчанию оси выключенными
 	/* PWR_MGMT0 */
