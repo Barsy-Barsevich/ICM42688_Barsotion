@@ -1,5 +1,4 @@
 #include "ICM42688_Barsotion.h"
-#include "ICM42688_Interface.h"
 
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
@@ -53,6 +52,13 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 		default: hicm->accel_scale = 16.;
 	}
 	hicm->accel_scale /= 32768.;
+}
+
+
+
+void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf)
+{
+	hicm->readRegister(ICM_0_WHO_AM_I, buf);
 }
 
 
