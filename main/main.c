@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -27,15 +28,17 @@ void app_main(void)
 	};
     
     ICM42688_spiInit(MISO_PINNUM, MOSI_PINNUM, CLK_PINNUM, CS_PINNUM);
-    //ICM42688_Init(&hicm, &icm_cfg);
+    ICM42688_Init(&hicm, &icm_cfg);
     hicm.read_reg = ICM42688_readRegister;
     
     while (1)
     {
 		printf("Reading who_am_i:");
-		uint8_t dummy;
-		hicm.read_reg(ICM_0_WHO_AM_I, &dummy);
-		printf(" %02X\n", dummy);
-		vTaskDelay(10);
+		int32_t raw[6];
+		//hicm.read_reg(ICM_0_WHO_AM_I, &dummy);
+		ICM42688_readRegAG(raw);
+		//printf(" %d, %d, %d, %d, %d, %d\n", (int)raw[0], (int)raw[1], (int)raw[2], (int)raw[3], (int)raw[4], (int)raw[5]);
+		printf(" %04lX, %ld\n", (uint32_t)raw[0], raw[0]);
+		vTaskDelay(1);
 	}
 }
