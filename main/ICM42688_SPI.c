@@ -17,11 +17,11 @@ void ICM42688_SPI_InterfaceInit(spi_host_device_t host, int miso, int mosi, int 
     buscfg.quadhd_io_num = -1;
     buscfg.max_transfer_sz = 262;
     buscfg.isr_cpu_id = 0;
-    ESP_ERROR_CHECK(spi_bus_initialize(SPI2_HOST, &buscfg, SPI_DMA_CH_AUTO));
+    ESP_ERROR_CHECK(spi_bus_initialize(host, &buscfg, SPI_DMA_CH_AUTO));
     
 	spi_device_interface_config_t icm_devcfg;
     memset(&icm_devcfg, 0, sizeof(spi_device_interface_config_t));
-    icm_devcfg.clock_speed_hz = 1000000;
+    icm_devcfg.clock_speed_hz = sck_freq;
     icm_devcfg.mode = 0;
     icm_devcfg.spics_io_num = cs;
     icm_devcfg.command_bits = 8;
@@ -31,7 +31,7 @@ void ICM42688_SPI_InterfaceInit(spi_host_device_t host, int miso, int mosi, int 
     icm_devcfg.queue_size = 2;
     icm_devcfg.post_cb = NULL;
     icm_devcfg.pre_cb = NULL;
-    spi_bus_add_device(SPI2_HOST, &icm_devcfg, &icm_dev);
+    spi_bus_add_device(host, &icm_devcfg, &icm_dev);
     
     memset(&icm_2byte_trans, 0, sizeof(spi_transaction_t));
     icm_2byte_trans.length = 8 * 2;

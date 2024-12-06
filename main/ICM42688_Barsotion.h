@@ -8,10 +8,15 @@
 #include "ICM42688_Interface.h"
 
 
-
+typedef enum __ICM42688_Interfaces
+{
+	Hardware_SPI,
+	Hardware_I2C,
+} ICM42688_Interface_t;
 
 typedef struct __ICM42688_CONFIG
 {
+	ICM42688_Interface_t interface;
 	struct __SPI {
 		int miso_pin;
 		int mosi_pin;
