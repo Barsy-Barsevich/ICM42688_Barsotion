@@ -1,4 +1,5 @@
 #include "ICM42688_Interface.h"
+#include "ICM42688_RegMap.h"
 
 /* device */
 spi_device_handle_t icm_dev;
@@ -38,6 +39,7 @@ void ICM42688_spiInit(int miso, int mosi, int sck, int cs)
     icm_2byte_trans.flags =  SPI_TRANS_USE_TXDATA |  SPI_TRANS_USE_RXDATA;
 }
 
+
 void ICM42688_readRegister(uint8_t reg, uint8_t *buf)
 {
     icm_2byte_trans.cmd = reg | 0x80;
@@ -52,4 +54,41 @@ void ICM42688_writeRegister(uint8_t reg, uint8_t data)
     icm_2byte_trans.cmd = reg;
     icm_2byte_trans.tx_data[0] = data;
     spi_device_polling_transmit(icm_dev, &icm_2byte_trans);
+}
+
+
+void ICM42688_readRegAG(int32_t *raw)
+{
+	uint8_t dummy;
+	int16_t pre;
+	ICM42688_readRegister(ICM_0_GYRO_DATA_X1, &dummy);
+	pre = (int16_t)dummy << 8;
+	ICM42688_readRegister(ICM_0_GYRO_DATA_X0, &dummy);
+	pre |= (int16_t)dummy;
+	raw[0] = (int32_t)pre;
+	ICM42688_readRegister(ICM_0_GYRO_DATA_Y1, &dummy);
+	pre = (int16_t)dummy << 8;
+	ICM42688_readRegister(ICM_0_GYRO_DATA_Y0, &dummy);
+	pre |= (int16_t)dummy;
+	raw[1] = (int32_t)pre;
+	ICM42688_readRegister(ICM_0_GYRO_DATA_Z1, &dummy);
+	pre = (int16_t)dummy << 8;
+	ICM42688_readRegister(ICM_0_GYRO_DATA_Z0, &dummy);
+	pre |= (int16_t)dummy;
+	raw[2] = (int32_t)pre;
+	ICM42688_readRegister(ICM_0_ACCEL_DATA_X0, &dummy);
+	pre = (int16_t)dummy << 8;
+	ICM42688_readRegister(ICM_0_ACCEL_DATA_X1, &dummy);
+	pre |= (int16_t)dummy;
+	raw[3] = (int32_t)pre;
+	ICM42688_readRegister(ICM_0_ACCEL_DATA_Y0, &dummy);
+	pre = (int16_t)dummy << 8;
+	ICM42688_readRegister(ICM_0_ACCEL_DATA_Y1, &dummy);
+	pre |= (int16_t)dummy;
+	raw[4] = (int32_t)pre;
+	ICM42688_readRegister(ICM_0_ACCEL_DATA_Z0, &dummy);
+	pre = (int16_t)dummy << 8;
+	ICM42688_readRegister(ICM_0_ACCEL_DATA_Z1, &dummy);
+	pre |= (int16_t)dummy;
+	raw[5] = (int32_t)pre;
 }
