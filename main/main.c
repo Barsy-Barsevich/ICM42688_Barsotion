@@ -21,7 +21,8 @@ void app_main(void)
     sleep(1);
     
     ICM42688_Config_t icm_cfg = {
-		.spi.host = SPI2_HOST,
+		.interface = Hardware_SPI,
+		.spi.host = SPI3_HOST,
 		.spi.miso_pin = MISO_PINNUM,
 		.spi.mosi_pin = MOSI_PINNUM,
 		.spi.sck_pin = CLK_PINNUM,
