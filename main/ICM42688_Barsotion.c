@@ -4,19 +4,19 @@
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 {
 	/*  */
-	hicm->write_reg = ICM42688_writeRegister;
-	hicm->read_reg = ICM42688_readRegister;
+	hicm->writeRegister = ICM42688_SPI_writeRegister;
+	hicm->readRegister = ICM42688_SPI_readRegister;
 	
 	//Сделать по умолчанию оси выключенными
 	/* PWR_MGMT0 */
 	uint8_t pwr_mgmt = IDLE_MODE_DISABLE;
 	if (cfg->accel.enable != 0) pwr_mgmt |= cfg->accel.mode;
 	if (cfg->gyro.enable != 0) pwr_mgmt |= cfg->gyro.mode;
-	hicm->write_reg(ICM_0_PWR_MGMT0, pwr_mgmt);
+	hicm->writeRegister(ICM_0_PWR_MGMT0, pwr_mgmt);
 	
 	/* GYRO_CONFIG0 */
 	uint8_t gyro_config0 = cfg->gyro.fs_sel | cfg->gyro.odr;
-	hicm->write_reg(ICM_0_GYRO_CONFIG0, gyro_config0);
+	hicm->writeRegister(ICM_0_GYRO_CONFIG0, gyro_config0);
 	switch (cfg->gyro.fs_sel)
 	{
 		case GYRO_FS_SEL_2000DPS: hicm->gyro_scale = 2000; break;
@@ -32,7 +32,7 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	hicm->gyro_scale /= 32768.;
 	/* ACCEL_CONFIG0 */
 	uint8_t accel_config0 = cfg->accel.fs_sel | cfg->accel.odr;
-	hicm->write_reg(ICM_0_ACCEL_CONFIG0, accel_config0);
+	hicm->writeRegister(ICM_0_ACCEL_CONFIG0, accel_config0);
 	switch (cfg->accel.fs_sel)
 	{
 		case ACCEL_FS_SEL_16G: hicm->accel_scale = 16.; break;
@@ -42,6 +42,46 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 		default: hicm->accel_scale = 16.;
 	}
 	hicm->accel_scale /= 32768.;
+}
+
+
+/**
+ * @brief Asyncronous reading gyro & accel raw data from registers
+ */
+void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw)
+{
+	uint8_t dummy;
+	int16_t pre;
+	hicm->readRegister(ICM_0_GYRO_DATA_X1, &dummy);
+	pre = (int16_t)dummy << 8;
+	hicm->readRegister(ICM_0_GYRO_DATA_X0, &dummy);
+	pre |= (int16_t)dummy;
+	raw[0] = (int32_t)pre;
+	hicm->readRegister(ICM_0_GYRO_DATA_Y1, &dummy);
+	pre = (int16_t)dummy << 8;
+	hicm->readRegister(ICM_0_GYRO_DATA_Y0, &dummy);
+	pre |= (int16_t)dummy;
+	raw[1] = (int32_t)pre;
+	hicm->readRegister(ICM_0_GYRO_DATA_Z1, &dummy);
+	pre = (int16_t)dummy << 8;
+	hicm->readRegister(ICM_0_GYRO_DATA_Z0, &dummy);
+	pre |= (int16_t)dummy;
+	raw[2] = (int32_t)pre;
+	hicm->readRegister(ICM_0_ACCEL_DATA_X0, &dummy);
+	pre = (int16_t)dummy << 8;
+	hicm->readRegister(ICM_0_ACCEL_DATA_X1, &dummy);
+	pre |= (int16_t)dummy;
+	raw[3] = (int32_t)pre;
+	hicm->readRegister(ICM_0_ACCEL_DATA_Y0, &dummy);
+	pre = (int16_t)dummy << 8;
+	hicm->readRegister(ICM_0_ACCEL_DATA_Y1, &dummy);
+	pre |= (int16_t)dummy;
+	raw[4] = (int32_t)pre;
+	hicm->readRegister(ICM_0_ACCEL_DATA_Z0, &dummy);
+	pre = (int16_t)dummy << 8;
+	hicm->readRegister(ICM_0_ACCEL_DATA_Z1, &dummy);
+	pre |= (int16_t)dummy;
+	raw[5] = (int32_t)pre;
 }
 
 
