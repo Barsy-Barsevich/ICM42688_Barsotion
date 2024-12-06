@@ -7,7 +7,7 @@ spi_device_handle_t icm_dev;
 spi_transaction_t icm_2byte_trans;
 
 
-void ICM42688_SPI_InterfaceInit(int miso, int mosi, int sck, int cs)
+void ICM42688_SPI_InterfaceInit(spi_host_device_t host, int miso, int mosi, int sck, int cs, int sck_freq)
 {
 	spi_bus_config_t buscfg = {0};
 	buscfg.miso_io_num = miso;

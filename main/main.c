@@ -7,6 +7,7 @@
 #include "ICM42688_Interface.h"
 
 #include "ICM42688_RegMap.h"
+#include "hal/spi_types.h"
 #include "pin_defs.h"
 
 ICM42688_t hicm;
@@ -20,6 +21,12 @@ void app_main(void)
     sleep(1);
     
     ICM42688_Config_t icm_cfg = {
+		.spi.host = SPI2_HOST,
+		.spi.miso_pin = MISO_PINNUM,
+		.spi.mosi_pin = MOSI_PINNUM,
+		.spi.sck_pin = CLK_PINNUM,
+		.spi.cs_pin = CS_PINNUM,
+		.spi.sck_freq = 10000000,
 		.accel.enable = ENABLE_XA | ENABLE_YA | ENABLE_ZA,
 		.accel.mode = ACCEL_LN_MODE,
 		.accel.odr = ACCEL_ODR_2KHZ,
@@ -30,7 +37,6 @@ void app_main(void)
 		.gyro.fs_sel = GYRO_FS_SEL_2000DPS,
 	};
     
-    ICM42688_SPI_InterfaceInit(MISO_PINNUM, MOSI_PINNUM, CLK_PINNUM, CS_PINNUM);
     ICM42688_Init(&hicm, &icm_cfg);
 //    hicm.readRegister = ICM42688_SPI_readRegister;
 	//hicm.accel_coef = 16. / 32768.;
