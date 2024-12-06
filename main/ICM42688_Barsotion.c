@@ -1,4 +1,5 @@
 #include "ICM42688_Barsotion.h"
+#include "ICM42688_RegMap.h"
 
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
@@ -67,19 +68,19 @@ void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw)
 	hicm->readRegister(ICM_0_GYRO_DATA_Z0, &dummy);
 	pre |= (int16_t)dummy;
 	raw[2] = (int32_t)pre;
-	hicm->readRegister(ICM_0_ACCEL_DATA_X0, &dummy);
-	pre = (int16_t)dummy << 8;
 	hicm->readRegister(ICM_0_ACCEL_DATA_X1, &dummy);
+	pre = (int16_t)dummy << 8;
+	hicm->readRegister(ICM_0_ACCEL_DATA_X0, &dummy);
 	pre |= (int16_t)dummy;
 	raw[3] = (int32_t)pre;
-	hicm->readRegister(ICM_0_ACCEL_DATA_Y0, &dummy);
-	pre = (int16_t)dummy << 8;
 	hicm->readRegister(ICM_0_ACCEL_DATA_Y1, &dummy);
+	pre = (int16_t)dummy << 8;
+	hicm->readRegister(ICM_0_ACCEL_DATA_Y0, &dummy);
 	pre |= (int16_t)dummy;
 	raw[4] = (int32_t)pre;
-	hicm->readRegister(ICM_0_ACCEL_DATA_Z0, &dummy);
-	pre = (int16_t)dummy << 8;
 	hicm->readRegister(ICM_0_ACCEL_DATA_Z1, &dummy);
+	pre = (int16_t)dummy << 8;
+	hicm->readRegister(ICM_0_ACCEL_DATA_Z0, &dummy);
 	pre |= (int16_t)dummy;
 	raw[5] = (int32_t)pre;
 }
@@ -90,9 +91,9 @@ void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw)
  */
 void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw)
 {
-	hicm->gyro.x = raw[0] * hicm->gyro_coef - hicm->gyro_bias.x;
-	hicm->gyro.y = raw[1] * hicm->gyro_coef - hicm->gyro_bias.y;
-	hicm->gyro.z = raw[2] * hicm->gyro_coef - hicm->gyro_bias.z;
+	hicm->gyro.x = raw[0] * hicm->gyro_scale - hicm->gyro_bias.x;
+	hicm->gyro.y = raw[1] * hicm->gyro_scale - hicm->gyro_bias.y;
+	hicm->gyro.z = raw[2] * hicm->gyro_scale - hicm->gyro_bias.z;
 }
 
 /**
@@ -110,7 +111,7 @@ void ICM42688_filterGyro(ICM42688_t *hicm)
  */
 void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw)
 {
-	hicm->accel.x = raw[0] * hicm->accel_coef;
-	hicm->accel.y = raw[1] * hicm->accel_coef;
-	hicm->accel.z = raw[2] * hicm->accel_coef;
+	hicm->accel.x = raw[0] * hicm->accel_scale;
+	hicm->accel.y = raw[1] * hicm->accel_scale;
+	hicm->accel.z = raw[2] * hicm->accel_scale;
 }
