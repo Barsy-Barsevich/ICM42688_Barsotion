@@ -99,6 +99,8 @@ typedef struct __ICM42688_Descriptor
 
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg);
+
+void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf);
 void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw);
 
 void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw);
