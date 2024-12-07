@@ -55,6 +55,12 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 }
 
 
+void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank)
+{
+	if (bank > 4) bank = 4;
+	hicm->writeRegister(ICM_0_REG_BANK_SEL, bank);	
+}
+
 
 void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf)
 {
