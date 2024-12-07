@@ -48,6 +48,36 @@ typedef struct __ICM42688_CONFIG
 		ICM42688_GYRO_UI_FILT_ORD_t ui_filt_ord;
 		ICM42688_GYRO_DEC2_M2_ORD_t dec2_m2_ord;
 	} gyro;
+	struct __INT1 {
+		int pin;
+		bool ui_fsync_en;
+		bool pll_rdy_en;
+		bool reset_done_en;
+		bool ui_drdy_en;
+		bool fifo_ths_en;
+		bool fifo_full_en;
+		bool ui_agc_rdy_en;
+		bool i3c_err_en;
+		bool smd_en;
+		bool wom_z_en;
+		bool wom_y_en;
+		bool wom_x_en;
+	} int1;
+	struct __INT2 {
+		int pin;
+		bool ui_fsync_en;
+		bool pll_rdy_en;
+		bool reset_done_en;
+		bool ui_drdy_en;
+		bool fifo_ths_en;
+		bool fifo_full_en;
+		bool ui_agc_rdy_en;
+		bool i3c_err_en;
+		bool smd_en;
+		bool wom_z_en;
+		bool wom_y_en;
+		bool wom_x_en;
+	} int2;
 } ICM42688_Config_t;
 
 
@@ -99,6 +129,8 @@ typedef struct __ICM42688_Descriptor
 
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg);
+
+void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank);
 
 void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf);
 void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw);
