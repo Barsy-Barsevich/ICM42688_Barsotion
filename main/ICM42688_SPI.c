@@ -1,10 +1,12 @@
 #include "ICM42688_Interface.h"
-#include "ICM42688_RegMap.h"
+#include "driver/spi_master.h"
+#include "portmacro.h"
 
 /* device */
 spi_device_handle_t icm_dev;
 /* transs */
 spi_transaction_t icm_2byte_trans;
+spi_transaction_t icm_fifo_trans;
 
 
 void ICM42688_SPI_InterfaceInit(spi_host_device_t host, int miso, int mosi, int sck, int cs, int sck_freq)
@@ -37,6 +39,11 @@ void ICM42688_SPI_InterfaceInit(spi_host_device_t host, int miso, int mosi, int 
     icm_2byte_trans.length = 8 * 2;
     icm_2byte_trans.rxlength = 8 * 2;
     icm_2byte_trans.flags =  SPI_TRANS_USE_TXDATA |  SPI_TRANS_USE_RXDATA;
+    
+    memset(&icm_fifo_trans, 0, sizeof(spi_transaction_t));
+    icm_fifo_trans.length = 8 * 2;
+    icm_fifo_trans.cmd = ICM_0_FIFO_DATA;
+    icm_fifo_trans.tx_buffer = NULL;
 }
 
 
@@ -54,4 +61,15 @@ void ICM42688_SPI_writeRegister(uint8_t reg, uint8_t data)
     icm_2byte_trans.cmd = reg;
     icm_2byte_trans.tx_data[0] = data;
     spi_device_polling_transmit(icm_dev, &icm_2byte_trans);
+}
+
+
+void ICM42688_SPI_readFIFO(ICM42688_Interface_t *local, uint8_t *buf, size_t quan)
+{
+	if (local->busy) spi_device_polling_end(icm_dev, portMAX_DELAY);
+	icm_fifo_trans.length = quan;
+	icm_fifo_trans.rxlength = quan;
+	icm_fifo_trans.rx_buffer = buf;
+	//spi_device_polling_transmit(icm_dev, &icm_fifo_trans);
+	spi_device_polling_start(icm_dev, &icm_fifo_trans, portMAX_DELAY);
 }

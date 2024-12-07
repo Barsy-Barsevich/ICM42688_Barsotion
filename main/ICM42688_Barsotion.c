@@ -3,7 +3,7 @@
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 {
-	if (cfg->interface == Hardware_SPI)
+	if (cfg->protocol == Hardware_SPI)
 	{
 		/* SPI init */
 		hicm->writeRegister = ICM42688_SPI_writeRegister;
@@ -11,7 +11,7 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 		ICM42688_SPI_InterfaceInit(cfg->spi.host, cfg->spi.miso_pin,
 			 cfg->spi.mosi_pin, cfg->spi.sck_pin, cfg->spi.cs_pin, cfg->spi.sck_freq);
 	}
-	else if (cfg->interface == Hardware_I2C)
+	else if (cfg->protocol == Hardware_I2C)
 	{
 		hicm->writeRegister = ICM42688_I2C_writeRegister;
 		hicm->readRegister = ICM42688_I2C_readRegister;
