@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <math.h>
 
 #include "ICM42688_RegMap.h"
@@ -94,6 +95,10 @@ typedef struct __ICM42688_CONFIG
 			bool wom_x_en;
 		} int2;
 	} interrupt;
+	struct {
+		ICM42688_FIFO_MODE_t mode;
+		uint16_t watermark;
+	} fifo;
 } ICM42688_Config_t;
 
 
