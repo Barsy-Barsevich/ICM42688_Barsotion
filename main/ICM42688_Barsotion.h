@@ -122,7 +122,7 @@ typedef struct __ICM42688_Descriptor
 {
     uint8_t address;
     //interface
-    void* interface;
+    ICM42688_Interface_t *interface;
     //coefficients
     float accel_coef;
     float gyro_coef;

@@ -66,10 +66,11 @@ void ICM42688_SPI_writeRegister(uint8_t reg, uint8_t data)
 
 void ICM42688_SPI_readFIFO(ICM42688_Interface_t *local, uint8_t *buf, size_t quan)
 {
-	if (local->busy) spi_device_polling_end(icm_dev, portMAX_DELAY);
+	printf("nachalo podstavy\n");
+	//if (local->busy) spi_device_polling_end(icm_dev, portMAX_DELAY);
 	icm_fifo_trans.length = quan;
 	icm_fifo_trans.rxlength = quan;
 	icm_fifo_trans.rx_buffer = buf;
-	//spi_device_polling_transmit(icm_dev, &icm_fifo_trans);
-	spi_device_polling_start(icm_dev, &icm_fifo_trans, portMAX_DELAY);
+	spi_device_polling_transmit(icm_dev, &icm_fifo_trans);
+	//spi_device_polling_start(icm_dev, &icm_fifo_trans, portMAX_DELAY);
 }

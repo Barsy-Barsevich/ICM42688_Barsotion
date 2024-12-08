@@ -36,23 +36,35 @@ void app_main(void)
 		.gyro.mode = GYRO_LN_MODE,
 		.gyro.odr = GYRO_ODR_2KHZ,
 		.gyro.fs_sel = GYRO_FS_SEL_2000DPS,
+		//.fifo.mode = FIFO_STREAM_MODE,
+		.fifo.watermark = 0xFFF,
 	};
     
     ICM42688_Init(&hicm, &icm_cfg);
 //    hicm.readRegister = ICM42688_SPI_readRegister;
 	//hicm.accel_coef = 16. / 32768.;
+	
+	uint8_t buf[50] = {0};
     
     while (1)
     {
-		printf("Reading who_am_i:");
-		int32_t raw[6];
-		//hicm.read_reg(ICM_0_WHO_AM_I, &dummy);
-		ICM42688_readRegAG(&hicm, raw);
-		//printf(" %d, %d, %d, %d, %d, %d\n", (int)raw[0], (int)raw[1], (int)raw[2], (int)raw[3], (int)raw[4], (int)raw[5]);
-		//printf(" %04lX, %ld\n", (uint32_t)raw[0], raw[0]);
-		ICM42688_calculateGyro(&hicm, raw);
-		ICM42688_calculateAccel(&hicm, raw+3);
-		printf("%ld, %ld, %ld, %f, %f, %f\n", raw[3], raw[4], raw[5], hicm.accel.x, hicm.accel.y, hicm.accel.z);
+//		printf("Reading who_am_i:");
+//		int32_t raw[6];
+//		//hicm.read_reg(ICM_0_WHO_AM_I, &dummy);
+//		ICM42688_readRegAG(&hicm, raw);
+//		//printf(" %d, %d, %d, %d, %d, %d\n", (int)raw[0], (int)raw[1], (int)raw[2], (int)raw[3], (int)raw[4], (int)raw[5]);
+//		//printf(" %04lX, %ld\n", (uint32_t)raw[0], raw[0]);
+//		ICM42688_calculateGyro(&hicm, raw);
+//		ICM42688_calculateAccel(&hicm, raw+3);
+//		printf("%ld, %ld, %ld, %f, %f, %f\n", raw[3], raw[4], raw[5], hicm.accel.x, hicm.accel.y, hicm.accel.z);
+//		
+		ICM42688_SPI_readFIFO(hicm.interface, buf, 20);
+		
+		for (size_t i=0; i<20; i++)
+		{
+			printf("%02X ", buf[i]);
+		}
+		printf("\n");
 		
 		vTaskDelay(1);
 	}
