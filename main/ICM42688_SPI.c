@@ -4,7 +4,7 @@
 
 /* device */
 spi_device_handle_t icm_dev;
-/* transs */
+/* transactions */
 spi_transaction_t icm_2byte_trans;
 spi_transaction_t icm_fifo_trans;
 
@@ -42,7 +42,7 @@ void ICM42688_SPI_InterfaceInit(spi_host_device_t host, int miso, int mosi, int 
     
     memset(&icm_fifo_trans, 0, sizeof(spi_transaction_t));
     icm_fifo_trans.length = 8 * 2;
-    icm_fifo_trans.cmd = ICM_0_FIFO_DATA;
+    icm_fifo_trans.cmd = ICM_0_FIFO_DATA | 0x80;
     icm_fifo_trans.tx_buffer = NULL;
 }
 
@@ -66,11 +66,12 @@ void ICM42688_SPI_writeRegister(uint8_t reg, uint8_t data)
 
 void ICM42688_SPI_readFIFO(ICM42688_Interface_t *local, uint8_t *buf, size_t quan)
 {
-	printf("nachalo podstavy\n");
-	//if (local->busy) spi_device_polling_end(icm_dev, portMAX_DELAY);
-	icm_fifo_trans.length = quan;
-	icm_fifo_trans.rxlength = quan;
+//	if (local->busy) spi_device_polling_end(icm_dev, portMAX_DELAY);
+    icm_fifo_trans.cmd = ICM_0_FIFO_DATA | 0x80;
+	icm_fifo_trans.length = quan * 8 + 8;
+	icm_fifo_trans.rxlength = quan * 8;
 	icm_fifo_trans.rx_buffer = buf;
 	spi_device_polling_transmit(icm_dev, &icm_fifo_trans);
-	//spi_device_polling_start(icm_dev, &icm_fifo_trans, portMAX_DELAY);
+//	spi_device_polling_start(icm_dev, &icm_fifo_trans, portMAX_DELAY);
+//	local->busy = true;
 }

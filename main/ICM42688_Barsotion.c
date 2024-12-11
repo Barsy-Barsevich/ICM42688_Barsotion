@@ -138,23 +138,27 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	hicm->writeRegister(ICM_0_INT_SOURCE4, int_src4);
 	
 	
+	/* SIGNAL_PATH_RESET */
+	uint8_t sig_path_res = 1<<1;
+	hicm->writeRegister(ICM_0_SIGNAL_PATH_RESET, sig_path_res);
 	/* FIFO_CONFIG */
 	uint8_t fifo_cfg = 0;
 	fifo_cfg |= cfg->fifo.mode;
 	hicm->writeRegister(ICM_0_FIFO_CONFIG, fifo_cfg);
 	/* FIFO_CONFIG1 */
 	uint8_t fifo_cfg1 = 0;
-	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_RESUME_PARTIAL_RD;
-	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_WM_GT_TH;
+	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_RESUME_PARTIAL_RD;
+	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_WM_GT_TH;
 	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_HIRES_EN;
 	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_TMST_FSYNC_EN;
-	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_TEMP_EN;
+	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_TEMP_EN;
 	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_GYRO_EN;
 	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_ACCEL_EN;
+	printf("Podstava: %02X\n", fifo_cfg1);
 	hicm->writeRegister(ICM_0_FIFO_CONFIG1, fifo_cfg1);
 	/* FIFO_CONFIG2-3 */
-	hicm->writeRegister(ICM_0_FIFO_CONFIG2, cfg->fifo.watermark & 0xFF);
-	hicm->writeRegister(ICM_0_FIFO_CONFIG3, (cfg->fifo.watermark>>8)&0x0F);
+	//hicm->writeRegister(ICM_0_FIFO_CONFIG2, cfg->fifo.watermark & 0xFF);
+	//hicm->writeRegister(ICM_0_FIFO_CONFIG3, (cfg->fifo.watermark>>8)&0x0F);
 }
 
 /**
