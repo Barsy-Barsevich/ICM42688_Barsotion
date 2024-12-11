@@ -171,8 +171,8 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	printf("Podstava: %02X\n", fifo_cfg1);
 	hicm->writeRegister(ICM_0_FIFO_CONFIG1, fifo_cfg1);
 	/* FIFO_CONFIG2-3 */
-	//hicm->writeRegister(ICM_0_FIFO_CONFIG2, cfg->fifo.watermark & 0xFF);
-	//hicm->writeRegister(ICM_0_FIFO_CONFIG3, (cfg->fifo.watermark>>8)&0x0F);
+	hicm->writeRegister(ICM_0_FIFO_CONFIG2, cfg->fifo.watermark & 0xFF);
+	hicm->writeRegister(ICM_0_FIFO_CONFIG3, (cfg->fifo.watermark>>8)&0x0F);
 }
 
 /**
@@ -291,4 +291,48 @@ void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw)
 	hicm->accel.x = raw[0] * hicm->accel_scale;
 	hicm->accel.y = raw[1] * hicm->accel_scale;
 	hicm->accel.z = raw[2] * hicm->accel_scale;
+}
+
+
+bool ICM42688_UI_FSYNC_IRQ_Check(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	hicm->readRegister(ICM_0_INT_STATUS, &dummy);
+	return (dummy & (1<<ICM_INT_STATUS_UI_FSYNC_INT)) != 0;
+}
+bool ICM42688_PLL_RDY_IRQ_Check(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	hicm->readRegister(ICM_0_INT_STATUS, &dummy);
+	return (dummy & (1<<ICM_INT_STATUS_PLL_RDY_INT)) != 0;
+}
+bool ICM42688_RESET_DONE_IRQ_Check(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	hicm->readRegister(ICM_0_INT_STATUS, &dummy);
+	return (dummy & (1<<ICM_INT_STATUS_RESET_DONE_INT)) != 0;
+}
+bool ICM42688_DATA_RDY_IRQ_Check(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	hicm->readRegister(ICM_0_INT_STATUS, &dummy);
+	return (dummy & (1<<ICM_INT_STATUS_DATA_RDY_INT)) != 0;
+}
+bool ICM42688_FIFO_THS_IRQ_Check(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	hicm->readRegister(ICM_0_INT_STATUS, &dummy);
+	return (dummy & (1<<ICM_INT_STATUS_FIFO_THS_INT)) != 0;
+}
+bool ICM42688_FIFO_FULL_IRQ_Check(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	hicm->readRegister(ICM_0_INT_STATUS, &dummy);
+	return (dummy & (1<<ICM_INT_STATUS_FIFO_FULL_INT)) != 0;
+}
+bool ICM42688_AGC_RDY_IRQ_IRQ_Check(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	hicm->readRegister(ICM_0_INT_STATUS, &dummy);
+	return (dummy & (1<<ICM_INT_STATUS_AGC_RDY_INT)) != 0;
 }

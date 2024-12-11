@@ -181,6 +181,12 @@ void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
 
 
-
+bool ICM42688_UI_FSYNC_IRQ_Check(ICM42688_t *hicm);
+bool ICM42688_PLL_RDY_IRQ_Check(ICM42688_t *hicm);
+bool ICM42688_RESET_DONE_IRQ_Check(ICM42688_t *hicm);
+bool ICM42688_DATA_RDY_IRQ_Check(ICM42688_t *hicm);
+bool ICM42688_FIFO_THS_IRQ_Check(ICM42688_t *hicm);
+bool ICM42688_FIFO_FULL_IRQ_Check(ICM42688_t *hicm);
+bool ICM42688_AGC_RDY_IRQ_IRQ_Check(ICM42688_t *hicm);
 
 
