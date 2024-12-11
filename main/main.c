@@ -27,16 +27,16 @@ void app_main(void)
 		.spi.mosi_pin = MOSI_PINNUM,
 		.spi.sck_pin = CLK_PINNUM,
 		.spi.cs_pin = CS_PINNUM,
-		.spi.sck_freq = 10000000,
+		.spi.sck_freq = 1000000,
 		.accel.enable = ENABLE_XA | ENABLE_YA | ENABLE_ZA,
 		.accel.mode = ACCEL_LN_MODE,
-		.accel.odr = ACCEL_ODR_2KHZ,
+		.accel.odr = ACCEL_ODR_6p25HZ,
 		.accel.fs_sel = ACCEL_16G_COEF,
 		.gyro.enable = ENABLE_XG | ENABLE_YG | ENABLE_ZG,
 		.gyro.mode = GYRO_LN_MODE,
-		.gyro.odr = GYRO_ODR_2KHZ,
+		.gyro.odr = GYRO_ODR_12p5HZ,
 		.gyro.fs_sel = GYRO_FS_SEL_2000DPS,
-		//.fifo.mode = FIFO_STREAM_MODE,
+		.fifo.mode = FIFO_STOP_ON_FULL_MODE,
 		.fifo.watermark = 0xFFF,
 	};
     
@@ -44,7 +44,7 @@ void app_main(void)
 //    hicm.readRegister = ICM42688_SPI_readRegister;
 	//hicm.accel_coef = 16. / 32768.;
 	
-	uint8_t buf[50] = {0};
+	static uint8_t buf[5000] = {0};
     
     while (1)
     {
@@ -65,7 +65,21 @@ void app_main(void)
 			printf("%02X ", buf[i]);
 		}
 		printf("\n");
+
+		uint8_t dummy[2];
+		dummy[0] = 0;
+		hicm.readRegister(ICM_0_FIFO_COUNTH, dummy);
+		hicm.readRegister(ICM_0_FIFO_COUNTL, dummy+1);
+		printf("Count: %u\t", (uint16_t)dummy[0]<<8 | dummy[1]);
+//		
+//		ICM42688_SPI_readFIFO(hicm.interface, buf, 20);
+//		
+//		hicm.readRegister(ICM_0_FIFO_LOST_PKT1, dummy);
+//		hicm.readRegister(ICM_0_FIFO_LOST_PKT0, dummy+1);
+//		printf("Lost: %u\n", (uint16_t)dummy[0]<<8 | dummy[1]);
 		
-		vTaskDelay(1);
+		
+		
+		vTaskDelay(10);
 	}
 }
