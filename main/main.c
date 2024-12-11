@@ -57,14 +57,20 @@ void app_main(void)
 //		ICM42688_calculateGyro(&hicm, raw);
 //		ICM42688_calculateAccel(&hicm, raw+3);
 //		printf("%ld, %ld, %ld, %f, %f, %f\n", raw[3], raw[4], raw[5], hicm.accel.x, hicm.accel.y, hicm.accel.z);
+
+//		ICM42688_SPI_readFIFO(hicm.interface, buf, 20);
 //		
-		ICM42688_SPI_readFIFO(hicm.interface, buf, 20);
-		
-		for (size_t i=0; i<20; i++)
-		{
-			printf("%02X ", buf[i]);
-		}
-		printf("\n");
+//		for (size_t i=0; i<20; i++)
+//		{
+//			printf("%02X ", buf[i]);
+//		}
+//		printf("\n");
+
+		int32_t raw[6];
+		ICM42688_readFIFO(&hicm, raw);
+		ICM42688_calculateAccel(&hicm, raw+3);
+		ICM42688_calculateGyro(&hicm, raw);
+		printf("%ld, %ld, %ld, %f, %f, %f\n", raw[0], raw[1], raw[2], hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
 
 		uint8_t dummy[2];
 		dummy[0] = 0;
@@ -80,6 +86,6 @@ void app_main(void)
 		
 		
 		
-		vTaskDelay(10);
+		vTaskDelay(8);
 	}
 }
