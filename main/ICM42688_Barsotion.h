@@ -9,6 +9,18 @@
 #include "ICM42688_Interface.h"
 
 
+#define FIFO_HEADER_MSG					7
+#define FIFO_HEADER_ACCEL				6
+#define FIFO_HEADER_GYRO				5
+#define FIFO_HEADER_20					4
+#define FIFO_HEADER_TIMESTAMP_FSYNC		2
+#define FIFO_HEADER_ODR_ACCEL			1
+#define FIFO_HEADER_ODR_GYRO			0
+
+
+
+
+
 typedef enum __ICM42688_Interfaces
 {
 	Hardware_SPI,
@@ -128,6 +140,8 @@ typedef struct __ICM42688_Descriptor
     float gyro_coef;
     float gyro_scale;
     float accel_scale;
+    size_t gyro_data_bit;
+    size_t accel_data_bit;
     //output data
     ICM42688_XYZ_t accel;
     ICM42688_XYZ_t gyro;
@@ -155,6 +169,7 @@ void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank);
 
 void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf);
 void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw);
+void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw);
 
 void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw);
 void ICM42688_filterGyro(ICM42688_t *hicm);

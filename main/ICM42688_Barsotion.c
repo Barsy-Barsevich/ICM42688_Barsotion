@@ -1,5 +1,7 @@
 #include "ICM42688_Barsotion.h"
+#include "ICM42688_Interface.h"
 #include "ICM42688_RegMap.h"
+#include <stdint.h>
 
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
@@ -26,6 +28,16 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	hicm->writeRegister(ICM_0_PWR_MGMT0, pwr_mgmt);
 	
 	/* GYRO_CONFIG0 */
+	if (cfg->fifo.mode != FIFO_BYPASS_MODE)
+	{
+		hicm->gyro_data_bit = 19;
+		hicm->accel_data_bit = 18;
+	}
+	else
+	{
+		hicm->gyro_data_bit = 16;
+		hicm->accel_data_bit = 16;
+	}
 	uint8_t gyro_config0 = cfg->gyro.fs_sel | cfg->gyro.odr;
 	hicm->writeRegister(ICM_0_GYRO_CONFIG0, gyro_config0);
 	switch (cfg->gyro.fs_sel)
@@ -40,7 +52,8 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 		case GYRO_FS_SEL_15p625DPS: hicm->gyro_scale = 15.625; break;
 		default: hicm->gyro_scale = 2000; break;
 	}
-	hicm->gyro_scale /= 32768.;
+	//hicm->gyro_scale /= 32768.;
+	hicm->gyro_scale *= powf((float)2, -(float)hicm->gyro_data_bit);
 	/* ACCEL_CONFIG0 */
 	uint8_t accel_config0 = cfg->accel.fs_sel | cfg->accel.odr;
 	hicm->writeRegister(ICM_0_ACCEL_CONFIG0, accel_config0);
@@ -52,7 +65,8 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 		case ACCEL_FS_SEL_2G: hicm->accel_scale = 2.; break;
 		default: hicm->accel_scale = 16.;
 	}
-	hicm->accel_scale /= 32768.;
+	//hicm->accel_scale /= 32768.;
+	hicm->accel_scale *= powf((float)2, -(float)hicm->accel_data_bit);
 	
 	
 	/* INT_CONFIG */
@@ -214,6 +228,38 @@ void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw)
 	hicm->readRegister(ICM_0_ACCEL_DATA_Z0, &dummy);
 	pre |= (int16_t)dummy;
 	raw[5] = (int32_t)pre;
+}
+
+
+void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw)
+{
+	uint8_t buf[20];
+	ICM42688_SPI_readFIFO(hicm->interface, buf, 20);
+	int16_t pre;
+	pre = (int16_t)buf[1]<<8 | (int16_t)buf[2];
+	raw[3] = (int32_t)pre << 4;
+	pre = (int16_t)buf[3]<<8 | (int16_t)buf[4];
+	raw[4] = (int32_t)pre << 4;
+	pre = (int16_t)buf[5]<<8 | (int16_t)buf[6];
+	raw[5] = (int32_t)pre << 4;
+	pre = (int16_t)buf[7]<<8 | (int16_t)buf[8];
+	raw[0] = (int32_t)pre << 4;
+	pre = (int16_t)buf[9]<<8 | (int16_t)buf[10];
+	raw[1] = (int32_t)pre << 4;
+	pre = (int16_t)buf[11]<<8 | (int16_t)buf[12];
+	raw[2] = (int32_t)pre << 4;
+	raw[3] |= (buf[17] & 0xF0) >> 4;
+	raw[4] |= (buf[18] & 0xF0) >> 4;
+	raw[5] |= (buf[19] & 0xF0) >> 4;
+	raw[0] |= (buf[17] & 0x0F);
+	raw[1] |= (buf[18] & 0x0F);
+	raw[2] |= (buf[19] & 0x0F);
+	raw[3] >>= 1;
+	raw[4] >>= 1;
+	raw[5] >>= 1;
+	raw[0] >>= 1;
+	raw[1] >>= 1;
+	raw[2] >>= 1;
 }
 
 
