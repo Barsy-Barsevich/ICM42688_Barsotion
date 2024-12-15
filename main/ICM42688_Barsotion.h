@@ -175,7 +175,8 @@ void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw);
 void ICM42688_filterGyro(ICM42688_t *hicm);
 void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw);
 
-
+void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr);
+void ICM42688_setAccelODR(ICM42688_t *hicm, ICM42688_ACCEL_ODR_t odr);
 
 void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
