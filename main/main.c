@@ -20,19 +20,8 @@ volatile bool anm;
 int32_t raw[6];
 
 
-static void IRAM_ATTR ANMtrap_handler(void* arg)
+static void IRAM_ATTR IMU_IRQ_handler(void* arg)
 {
-//	uint8_t dummy[2];
-//	hicm.readRegister(ICM_0_INT_STATUS, dummy);
-//	hicm.readRegister(ICM_0_FIFO_COUNTH, dummy);
-//	hicm.readRegister(ICM_0_FIFO_COUNTL, dummy+1);
-//	//printf("%u\t", (uint16_t)dummy[0]<<8 | dummy[1]);
-//	
-//	ICM42688_readFIFO(&hicm, raw);
-//	
-//	//printf("%ld, %ld, %ld, %f, %f, %f\n", raw[0], raw[1], raw[2], hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
-////	printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
-//	anm = true;
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE, xResult;
 	bool ready = true;
 	xResult = xQueueSendFromISR(button_queue, &ready, &xHigherPriorityTaskWoken);
@@ -43,7 +32,7 @@ static void IRAM_ATTR ANMtrap_handler(void* arg)
 }
 
 
-void IRAM_ATTR task0(void *pvParameters)
+void IRAM_ATTR IMU_IRQ_process(void *pvParameters)
 {
 	bool res;
 	while (1)
@@ -98,7 +87,7 @@ void app_main()
 	
 	button_queue = xQueueCreate(32, sizeof(bool));
 	// Запускаем задачу управления светодиодом
-  	xTaskCreatePinnedToCore(task0, "imu", 4096, NULL, 10, NULL, 0);
+  	xTaskCreatePinnedToCore(IMU_IRQ_process, "imu", 4096, NULL, 10, NULL, 0);
     
   	// Настраиваем вывод для кнопки
   	gpio_set_direction(GINT1_PINNUM, GPIO_MODE_INPUT);
@@ -112,7 +101,7 @@ void app_main()
   	};
 
   	// Регистрируем обработчик прерывания на нажатие кнопки
-  	gpio_isr_handler_add(GINT1_PINNUM, ANMtrap_handler, NULL);
+  	gpio_isr_handler_add(GINT1_PINNUM, IMU_IRQ_handler, NULL);
   	// Устанавливаем тип события для генерации прерывания - по низкому уровню
   	// Важно генерить прерывания именно по отрицательному фронту, а не по
   	// низкому уровню, ибо иначе будет interrupt wdt timeout error
