@@ -175,6 +175,7 @@ void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw);
 void ICM42688_filterGyro(ICM42688_t *hicm);
 void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw);
 
+void ICM42688_flushFIFO(ICM42688_t *hicm);
 void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr);
 void ICM42688_setAccelODR(ICM42688_t *hicm, ICM42688_ACCEL_ODR_t odr);
 
