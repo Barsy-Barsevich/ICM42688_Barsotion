@@ -336,3 +336,21 @@ bool ICM42688_AGC_RDY_IRQ_IRQ_Check(ICM42688_t *hicm)
 	hicm->readRegister(ICM_0_INT_STATUS, &dummy);
 	return (dummy & (1<<ICM_INT_STATUS_AGC_RDY_INT)) != 0;
 }
+
+
+void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr)
+{
+	uint8_t gyro_cfg0;
+	hicm->readRegister(ICM_0_GYRO_CONFIG0, &gyro_cfg0);
+	gyro_cfg0 = (gyro_cfg0 & 0xF0) | odr;
+	hicm->writeRegister(ICM_0_GYRO_CONFIG0, gyro_cfg0);
+}
+
+
+void ICM42688_setAccelODR(ICM42688_t *hicm, ICM42688_ACCEL_ODR_t odr)
+{
+	uint8_t acc_cfg0;
+	hicm->readRegister(ICM_0_ACCEL_CONFIG0, &acc_cfg0);
+	acc_cfg0 = (acc_cfg0 & 0xF0) | odr;
+	hicm->writeRegister(ICM_0_ACCEL_CONFIG0, acc_cfg0);
+}
