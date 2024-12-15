@@ -338,6 +338,15 @@ bool ICM42688_AGC_RDY_IRQ_IRQ_Check(ICM42688_t *hicm)
 }
 
 
+void ICM42688_flushFIFO(ICM42688_t *hicm)
+{
+	uint8_t sig_path_res;
+	hicm->readRegister(ICM_0_SIGNAL_PATH_RESET, &sig_path_res);
+	sig_path_res |= 1<<1;
+	hicm->writeRegister(ICM_0_SIGNAL_PATH_RESET, sig_path_res);
+}
+
+
 void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr)
 {
 	uint8_t gyro_cfg0;
