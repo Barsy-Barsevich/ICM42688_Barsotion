@@ -178,6 +178,8 @@ void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw);
 void ICM42688_flushFIFO(ICM42688_t *hicm);
 void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr);
 void ICM42688_setAccelODR(ICM42688_t *hicm, ICM42688_ACCEL_ODR_t odr);
+void ICM42688_setGyroScale(ICM42688_t *hicm, ICM42688_GYRO_FS_SEL_t scale);
+void ICM42688_setAccelScale(ICM42688_t *hicm, ICM42688_ACCEL_FS_SEL_t scale);
 
 void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
