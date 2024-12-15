@@ -27,7 +27,6 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	if (cfg->gyro.enable != 0) pwr_mgmt |= cfg->gyro.mode;
 	hicm->writeRegister(ICM_0_PWR_MGMT0, pwr_mgmt);
 	
-	/* GYRO_CONFIG0 */
 	if (cfg->fifo.mode != FIFO_BYPASS_MODE)
 	{
 		hicm->gyro_data_bit = 19;
@@ -38,35 +37,11 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 		hicm->gyro_data_bit = 16;
 		hicm->accel_data_bit = 16;
 	}
-	uint8_t gyro_config0 = cfg->gyro.fs_sel | cfg->gyro.odr;
-	hicm->writeRegister(ICM_0_GYRO_CONFIG0, gyro_config0);
-	switch (cfg->gyro.fs_sel)
-	{
-		case GYRO_FS_SEL_2000DPS: hicm->gyro_scale = 2000; break;
-		case GYRO_FS_SEL_1000DPS: hicm->gyro_scale = 1000; break;
-		case GYRO_FS_SEL_500DPS: hicm->gyro_scale = 500; break;
-		case GYRO_FS_SEL_250DPS: hicm->gyro_scale = 250; break;
-		case GYRO_FS_SEL_125DPS: hicm->gyro_scale = 125; break;
-		case GYRO_FS_SEL_62p5DPS: hicm->gyro_scale = 62.5; break;
-		case GYRO_FS_SEL_31p25DPS: hicm->gyro_scale = 31.25; break;
-		case GYRO_FS_SEL_15p625DPS: hicm->gyro_scale = 15.625; break;
-		default: hicm->gyro_scale = 2000; break;
-	}
-	//hicm->gyro_scale /= 32768.;
-	hicm->gyro_scale *= powf((float)2, -(float)hicm->gyro_data_bit);
-	/* ACCEL_CONFIG0 */
-	uint8_t accel_config0 = cfg->accel.fs_sel | cfg->accel.odr;
-	hicm->writeRegister(ICM_0_ACCEL_CONFIG0, accel_config0);
-	switch (cfg->accel.fs_sel)
-	{
-		case ACCEL_FS_SEL_16G: hicm->accel_scale = 16.; break;
-		case ACCEL_FS_SEL_8G: hicm->accel_scale = 8.; break;
-		case ACCEL_FS_SEL_4G: hicm->accel_scale = 4.; break;
-		case ACCEL_FS_SEL_2G: hicm->accel_scale = 2.; break;
-		default: hicm->accel_scale = 16.;
-	}
-	//hicm->accel_scale /= 32768.;
-	hicm->accel_scale *= powf((float)2, -(float)hicm->accel_data_bit);
+	/* Scale & ODR */
+	ICM42688_setGyroScale(hicm, cfg->gyro.fs_sel);
+	ICM42688_setGyroODR(hicm, cfg->gyro.odr);
+	ICM42688_setAccelScale(hicm, cfg->accel.fs_sel);
+	ICM42688_setAccelODR(hicm, cfg->accel.odr);
 	
 	
 	/* INT_CONFIG */
