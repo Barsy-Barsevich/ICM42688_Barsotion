@@ -37,20 +37,20 @@ void IRAM_ATTR IMU_IRQ_process(void *pvParameters)
 	bool res;
 	while (1)
 	{
-	xQueueReceive(button_queue, &res, portMAX_DELAY);
-	if (res)
-	{
-	uint8_t dummy[2];
-	hicm.readRegister(ICM_0_INT_STATUS, dummy);
-	hicm.readRegister(ICM_0_FIFO_COUNTH, dummy);
-	hicm.readRegister(ICM_0_FIFO_COUNTL, dummy+1);
-	//printf("%u\t", (uint16_t)dummy[0]<<8 | dummy[1]);
-	ICM42688_readFIFO(&hicm, raw);
-	ICM42688_calculateAccel(&hicm, raw+3);
-	ICM42688_calculateGyro(&hicm, raw);
-	//printf("%ld, %ld, %ld, %f, %f, %f\n", raw[0], raw[1], raw[2], hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
-	printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
-	}
+		xQueueReceive(button_queue, &res, portMAX_DELAY);
+		if (res)
+		{
+			uint8_t dummy[2];
+			hicm.readRegister(ICM_0_INT_STATUS, dummy);
+			hicm.readRegister(ICM_0_FIFO_COUNTH, dummy);
+			hicm.readRegister(ICM_0_FIFO_COUNTL, dummy+1);
+			//printf("%u\t", (uint16_t)dummy[0]<<8 | dummy[1]);
+			ICM42688_readFIFO(&hicm, raw);
+			ICM42688_calculateAccel(&hicm, raw+3);
+			ICM42688_calculateGyro(&hicm, raw);
+			//printf("%ld, %ld, %ld, %f, %f, %f\n", raw[0], raw[1], raw[2], hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
+			printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
+		}
 	}
 }
 
@@ -59,6 +59,7 @@ void app_main()
 {
 	printf("Hello from app_main!\n");
     sleep(1);
+    //calibrateGyro();
     
     ICM42688_Config_t icm_cfg = {
 		.protocol = Hardware_SPI,
@@ -78,10 +79,10 @@ void app_main()
 		.gyro.fs_sel = GYRO_FS_SEL_2000DPS,
 		.fifo.mode = FIFO_STREAM_MODE,
 		.fifo.watermark = 20,
-		.interrupt.fifo_ths_int_clear = FIFO_THS_INT_CLEAR_ON_STATUS_BIT_READ,
-		.interrupt.tdeassert_dis = INT_TDEASSERT_ENABLE,
-		.interrupt.tpulse_duration = INT_TPULSE_100US,
-		.interrupt.int1.drive_circuit = INT1_PUSH_PULL,
+		.interrupt.cfg.fifo_ths_int_clear = FIFO_THS_INT_CLEAR_ON_STATUS_BIT_READ,
+		.interrupt.cfg.tdeassert_dis = INT_TDEASSERT_ENABLE,
+		.interrupt.cfg.tpulse_duration = INT_TPULSE_8US,
+		.interrupt.int1.drive_circuit = PUSH_PULL,
 		.interrupt.int1.fifo_ths_en = true,
 	};
 	

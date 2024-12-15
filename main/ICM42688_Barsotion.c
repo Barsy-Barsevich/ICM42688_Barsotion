@@ -44,88 +44,91 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	ICM42688_setAccelODR(hicm, cfg->accel.odr);
 	
 	
-	/* INT_CONFIG */
-	uint8_t int_cfg = 0;
-	int_cfg |= cfg->interrupt.int1.mode;
-	int_cfg |= cfg->interrupt.int1.drive_circuit;
-	int_cfg |= cfg->interrupt.int1.polarity;
-	int_cfg |= cfg->interrupt.int2.mode;
-	int_cfg |= cfg->interrupt.int2.drive_circuit;
-	int_cfg |= cfg->interrupt.int2.polarity;
-	hicm->writeRegister(ICM_0_INT_CONFIG, int_cfg);
-	/* INT_CONFIG0 */
-	uint8_t int_cfg0 = 0;
-	int_cfg0 |= cfg->interrupt.drdy_int_clear;
-	int_cfg0 |= cfg->interrupt.fifo_ths_int_clear;
-	int_cfg0 |= cfg->interrupt.fifo_full_int_clear;
-	hicm->writeRegister(ICM_0_INT_CONFIG0, int_cfg0);
-	/* INT_CONFIG1 */
-	uint8_t int_cfg1 = 0;
-	int_cfg1 |= cfg->interrupt.tpulse_duration;
-	int_cfg1 |= cfg->interrupt.tdeassert_dis;
-	int_cfg1 |= 0<<ICM_INT_CONFIG1_INT_ASYNC_RESET;
-	hicm->writeRegister(ICM_0_INT_CONFIG1, int_cfg1);
-	/* INT_SOURCE0 */
-	uint8_t int_src0 = 0;
-	if (cfg->interrupt.int1.ui_fsync_en)
-		int_src0 |= 1<<ICM_INT_SOURCE0_UI_FSYNC_INT1_EN;
-	if (cfg->interrupt.int1.pll_rdy_en)
-		int_src0 |= 1<<ICM_INT_SOURCE0_PLL_RDY_INT1_EN;
-	if (cfg->interrupt.int1.reset_done_en)
-		int_src0 |= 1<<ICM_INT_SOURCE0_RESET_DONE_INT1_EN;
-	if (cfg->interrupt.int1.ui_drdy_en)
-		int_src0 |= 1<<ICM_INT_SOURCE0_UI_DRDY_INT1_EN;
-	if (cfg->interrupt.int1.fifo_ths_en)
-		int_src0 |= 1<<ICM_INT_SOURCE0_FIFO_THS_INT1_EN;
-	if (cfg->interrupt.int1.fifo_full_en)
-		int_src0 |= 1<<ICM_INT_SOURCE0_FIFO_FULL_INT1_EN;
-	if (cfg->interrupt.int1.ui_agc_rdy_en)
-		int_src0 |= 1<<ICM_INT_SOURCE0_UI_AGC_RDY_INT1_EN;
-	hicm->writeRegister(ICM_0_INT_SOURCE0, int_src0);
-	/* INT_SOURCE1 */
-	uint8_t int_src1 = 0;
-	if (cfg->interrupt.int1.i3c_err_en)
-		int_src1 |= 1<<ICM_INT_SOURCE1_I3C_PROTOCOL_ERROR_INT1_EN;
-	if (cfg->interrupt.int1.smd_en)
-		int_src1 |= 1<<ICM_INT_SOURCE1_SMD_INT1_EN;
-	if (cfg->interrupt.int1.wom_x_en)
-		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_X_INT1_EN;
-	if (cfg->interrupt.int1.wom_y_en)
-		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_Y_INT1_EN;
-	if (cfg->interrupt.int1.wom_z_en)
-		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_Z_INT1_EN;
-	hicm->writeRegister(ICM_0_INT_SOURCE1, int_src1);
-	/* INT_SOURCE3 */
-	uint8_t int_src3 = 0;
-	if (cfg->interrupt.int2.ui_fsync_en)
-		int_src3 |= 1<<ICM_INT_SOURCE3_UI_FSYNC_INT1_EN;
-	if (cfg->interrupt.int2.pll_rdy_en)
-		int_src3 |= 1<<ICM_INT_SOURCE3_PLL_RDY_INT1_EN;
-	if (cfg->interrupt.int2.reset_done_en)
-		int_src3 |= 1<<ICM_INT_SOURCE3_RESET_DONE_INT1_EN;
-	if (cfg->interrupt.int2.ui_drdy_en)
-		int_src3 |= 1<<ICM_INT_SOURCE3_UI_DRDY_INT1_EN;
-	if (cfg->interrupt.int2.fifo_ths_en)
-		int_src3 |= 1<<ICM_INT_SOURCE3_FIFO_THS_INT1_EN;
-	if (cfg->interrupt.int2.fifo_full_en)
-		int_src3 |= 1<<ICM_INT_SOURCE3_FIFO_FULL_INT1_EN;
-	if (cfg->interrupt.int2.ui_agc_rdy_en)
-		int_src3 |= 1<<ICM_INT_SOURCE3_UI_AGC_RDY_INT1_EN;
-	hicm->writeRegister(ICM_0_INT_SOURCE3, int_src3);
-	/* INT_SOURCE1 */
-	uint8_t int_src4 = 0;
-	if (cfg->interrupt.int2.i3c_err_en)
-		int_src4 |= 1<<ICM_INT_SOURCE4_I3C_PROTOCOL_ERROR_INT1_EN;
-	if (cfg->interrupt.int2.smd_en)
-		int_src4 |= 1<<ICM_INT_SOURCE4_SMD_INT1_EN;
-	if (cfg->interrupt.int2.wom_x_en)
-		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_X_INT1_EN;
-	if (cfg->interrupt.int2.wom_y_en)
-		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_Y_INT1_EN;
-	if (cfg->interrupt.int2.wom_z_en)
-		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_Z_INT1_EN;
-	hicm->writeRegister(ICM_0_INT_SOURCE4, int_src4);
-	
+//	/* INT_CONFIG */
+//	uint8_t int_cfg = 0;
+//	int_cfg |= cfg->interrupt.int2.mode;
+//	int_cfg |= cfg->interrupt.int2.drive_circuit;
+//	int_cfg |= cfg->interrupt.int2.polarity;
+//	int_cfg <<= ICM_INT_CONFIG_INT2;
+//	int_cfg |= cfg->interrupt.int1.mode;
+//	int_cfg |= cfg->interrupt.int1.drive_circuit;
+//	int_cfg |= cfg->interrupt.int1.polarity;
+//	hicm->writeRegister(ICM_0_INT_CONFIG, int_cfg);
+////	/* INT_CONFIG0 */
+////	uint8_t int_cfg0 = 0;
+////	int_cfg0 |= cfg->interrupt.cfg.drdy_int_clear;
+////	int_cfg0 |= cfg->interrupt.cfg.fifo_ths_int_clear;
+////	int_cfg0 |= cfg->interrupt.cfg.fifo_full_int_clear;
+////	hicm->writeRegister(ICM_0_INT_CONFIG0, int_cfg0);
+////	/* INT_CONFIG1 */
+////	uint8_t int_cfg1 = 0;
+////	int_cfg1 |= cfg->interrupt.cfg.tpulse_duration;
+////	int_cfg1 |= cfg->interrupt.cfg.tdeassert_dis;
+////	int_cfg1 |= 0<<ICM_INT_CONFIG1_INT_ASYNC_RESET;
+////	hicm->writeRegister(ICM_0_INT_CONFIG1, int_cfg1);
+//	/* INT_SOURCE0 */
+//	uint8_t int_src0 = 0;
+//	if (cfg->interrupt.int1.ui_fsync_en)
+//		int_src0 |= 1<<ICM_INT_SOURCE0_UI_FSYNC_INT1_EN;
+//	if (cfg->interrupt.int1.pll_rdy_en)
+//		int_src0 |= 1<<ICM_INT_SOURCE0_PLL_RDY_INT1_EN;
+//	if (cfg->interrupt.int1.reset_done_en)
+//		int_src0 |= 1<<ICM_INT_SOURCE0_RESET_DONE_INT1_EN;
+//	if (cfg->interrupt.int1.ui_drdy_en)
+//		int_src0 |= 1<<ICM_INT_SOURCE0_UI_DRDY_INT1_EN;
+//	if (cfg->interrupt.int1.fifo_ths_en)
+//		int_src0 |= 1<<ICM_INT_SOURCE0_FIFO_THS_INT1_EN;
+//	if (cfg->interrupt.int1.fifo_full_en)
+//		int_src0 |= 1<<ICM_INT_SOURCE0_FIFO_FULL_INT1_EN;
+//	if (cfg->interrupt.int1.ui_agc_rdy_en)
+//		int_src0 |= 1<<ICM_INT_SOURCE0_UI_AGC_RDY_INT1_EN;
+//	hicm->writeRegister(ICM_0_INT_SOURCE0, int_src0);
+//	/* INT_SOURCE1 */
+//	uint8_t int_src1 = 0;
+//	if (cfg->interrupt.int1.i3c_err_en)
+//		int_src1 |= 1<<ICM_INT_SOURCE1_I3C_PROTOCOL_ERROR_INT1_EN;
+//	if (cfg->interrupt.int1.smd_en)
+//		int_src1 |= 1<<ICM_INT_SOURCE1_SMD_INT1_EN;
+//	if (cfg->interrupt.int1.wom_x_en)
+//		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_X_INT1_EN;
+//	if (cfg->interrupt.int1.wom_y_en)
+//		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_Y_INT1_EN;
+//	if (cfg->interrupt.int1.wom_z_en)
+//		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_Z_INT1_EN;
+//	hicm->writeRegister(ICM_0_INT_SOURCE1, int_src1);
+//	/* INT_SOURCE3 */
+//	uint8_t int_src3 = 0;
+//	if (cfg->interrupt.int2.ui_fsync_en)
+//		int_src3 |= 1<<ICM_INT_SOURCE3_UI_FSYNC_INT1_EN;
+//	if (cfg->interrupt.int2.pll_rdy_en)
+//		int_src3 |= 1<<ICM_INT_SOURCE3_PLL_RDY_INT1_EN;
+//	if (cfg->interrupt.int2.reset_done_en)
+//		int_src3 |= 1<<ICM_INT_SOURCE3_RESET_DONE_INT1_EN;
+//	if (cfg->interrupt.int2.ui_drdy_en)
+//		int_src3 |= 1<<ICM_INT_SOURCE3_UI_DRDY_INT1_EN;
+//	if (cfg->interrupt.int2.fifo_ths_en)
+//		int_src3 |= 1<<ICM_INT_SOURCE3_FIFO_THS_INT1_EN;
+//	if (cfg->interrupt.int2.fifo_full_en)
+//		int_src3 |= 1<<ICM_INT_SOURCE3_FIFO_FULL_INT1_EN;
+//	if (cfg->interrupt.int2.ui_agc_rdy_en)
+//		int_src3 |= 1<<ICM_INT_SOURCE3_UI_AGC_RDY_INT1_EN;
+//	hicm->writeRegister(ICM_0_INT_SOURCE3, int_src3);
+//	/* INT_SOURCE1 */
+//	uint8_t int_src4 = 0;
+//	if (cfg->interrupt.int2.i3c_err_en)
+//		int_src4 |= 1<<ICM_INT_SOURCE4_I3C_PROTOCOL_ERROR_INT1_EN;
+//	if (cfg->interrupt.int2.smd_en)
+//		int_src4 |= 1<<ICM_INT_SOURCE4_SMD_INT1_EN;
+//	if (cfg->interrupt.int2.wom_x_en)
+//		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_X_INT1_EN;
+//	if (cfg->interrupt.int2.wom_y_en)
+//		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_Y_INT1_EN;
+//	if (cfg->interrupt.int2.wom_z_en)
+//		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_Z_INT1_EN;
+//	hicm->writeRegister(ICM_0_INT_SOURCE4, int_src4);
+	ICM42688_setInterruptConfig(hicm, &(cfg->interrupt.cfg));
+	ICM42688_setINT1Config(hicm, &(cfg->interrupt.int1));
+	ICM42688_setINT2Config(hicm, &(cfg->interrupt.int2));
 	
 	/* SIGNAL_PATH_RESET */
 	uint8_t sig_path_res = 1<<1;
@@ -377,4 +380,106 @@ void ICM42688_setAccelScale(ICM42688_t *hicm, ICM42688_ACCEL_FS_SEL_t scale)
 		default: hicm->accel_scale = 16.;
 	}
 	hicm->accel_scale *= powf(2.0, -(float)hicm->accel_data_bit);
+}
+
+
+void ICM42688_setInterruptConfig(ICM42688_t *hicm, ICM42688_INT_Config_t *cfg)
+{
+	/* INT_CONFIG0 */
+	uint8_t int_cfg0 = 0;
+	int_cfg0 |= cfg->drdy_int_clear;
+	int_cfg0 |= cfg->fifo_ths_int_clear;
+	int_cfg0 |= cfg->fifo_full_int_clear;
+	hicm->writeRegister(ICM_0_INT_CONFIG0, int_cfg0);
+	/* INT_CONFIG1 */
+	uint8_t int_cfg1 = 0;
+	int_cfg1 |= cfg->tpulse_duration;
+	int_cfg1 |= cfg->tdeassert_dis;
+	int_cfg1 |= 0<<ICM_INT_CONFIG1_INT_ASYNC_RESET;
+	hicm->writeRegister(ICM_0_INT_CONFIG1, int_cfg1);
+}
+
+
+void ICM42688_setINT1Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)
+{
+	/* INT_CONFIG */
+	uint8_t int_cfg = 0;
+	hicm->readRegister(ICM_0_INT_CONFIG, &int_cfg);
+	int_cfg <<= ICM_INT_CONFIG_INT2;
+	int_cfg |= ch->mode;
+	int_cfg |= ch->drive_circuit;
+	int_cfg |= ch->polarity;
+	hicm->writeRegister(ICM_0_INT_CONFIG, int_cfg);
+	/* INT_SOURCE0 */
+	uint8_t int_src0 = 0;
+	if (ch->ui_fsync_en)
+		int_src0 |= 1<<ICM_INT_SOURCE0_UI_FSYNC_INT1_EN;
+	if (ch->pll_rdy_en)
+		int_src0 |= 1<<ICM_INT_SOURCE0_PLL_RDY_INT1_EN;
+	if (ch->reset_done_en)
+		int_src0 |= 1<<ICM_INT_SOURCE0_RESET_DONE_INT1_EN;
+	if (ch->ui_drdy_en)
+		int_src0 |= 1<<ICM_INT_SOURCE0_UI_DRDY_INT1_EN;
+	if (ch->fifo_ths_en)
+		int_src0 |= 1<<ICM_INT_SOURCE0_FIFO_THS_INT1_EN;
+	if (ch->fifo_full_en)
+		int_src0 |= 1<<ICM_INT_SOURCE0_FIFO_FULL_INT1_EN;
+	if (ch->ui_agc_rdy_en)
+		int_src0 |= 1<<ICM_INT_SOURCE0_UI_AGC_RDY_INT1_EN;
+	hicm->writeRegister(ICM_0_INT_SOURCE0, int_src0);
+	/* INT_SOURCE1 */
+	uint8_t int_src1 = 0;
+	if (ch->i3c_err_en)
+		int_src1 |= 1<<ICM_INT_SOURCE1_I3C_PROTOCOL_ERROR_INT1_EN;
+	if (ch->smd_en)
+		int_src1 |= 1<<ICM_INT_SOURCE1_SMD_INT1_EN;
+	if (ch->wom_x_en)
+		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_X_INT1_EN;
+	if (ch->wom_y_en)
+		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_Y_INT1_EN;
+	if (ch->wom_z_en)
+		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_Z_INT1_EN;
+	hicm->writeRegister(ICM_0_INT_SOURCE1, int_src1);
+}
+
+
+void ICM42688_setINT2Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)
+{
+		/* INT_CONFIG */
+	uint8_t int_cfg;
+	hicm->readRegister(ICM_0_INT_CONFIG, &int_cfg);
+	int_cfg |= ch->mode;
+	int_cfg |= ch->drive_circuit;
+	int_cfg |= ch->polarity;
+	hicm->writeRegister(ICM_0_INT_CONFIG, int_cfg);
+	/* INT_SOURCE3 */
+	uint8_t int_src3 = 0;
+	if (ch->ui_fsync_en)
+		int_src3 |= 1<<ICM_INT_SOURCE3_UI_FSYNC_INT1_EN;
+	if (ch->pll_rdy_en)
+		int_src3 |= 1<<ICM_INT_SOURCE3_PLL_RDY_INT1_EN;
+	if (ch->reset_done_en)
+		int_src3 |= 1<<ICM_INT_SOURCE3_RESET_DONE_INT1_EN;
+	if (ch->ui_drdy_en)
+		int_src3 |= 1<<ICM_INT_SOURCE3_UI_DRDY_INT1_EN;
+	if (ch->fifo_ths_en)
+		int_src3 |= 1<<ICM_INT_SOURCE3_FIFO_THS_INT1_EN;
+	if (ch->fifo_full_en)
+		int_src3 |= 1<<ICM_INT_SOURCE3_FIFO_FULL_INT1_EN;
+	if (ch->ui_agc_rdy_en)
+		int_src3 |= 1<<ICM_INT_SOURCE3_UI_AGC_RDY_INT1_EN;
+	hicm->writeRegister(ICM_0_INT_SOURCE3, int_src3);
+	/* INT_SOURCE1 */
+	uint8_t int_src4 = 0;
+	if (ch->i3c_err_en)
+		int_src4 |= 1<<ICM_INT_SOURCE4_I3C_PROTOCOL_ERROR_INT1_EN;
+	if (ch->smd_en)
+		int_src4 |= 1<<ICM_INT_SOURCE4_SMD_INT1_EN;
+	if (ch->wom_x_en)
+		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_X_INT1_EN;
+	if (ch->wom_y_en)
+		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_Y_INT1_EN;
+	if (ch->wom_z_en)
+		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_Z_INT1_EN;
+	hicm->writeRegister(ICM_0_INT_SOURCE4, int_src4);
 }

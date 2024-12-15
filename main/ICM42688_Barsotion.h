@@ -28,6 +28,37 @@ typedef enum __ICM42688_Interfaces
 } ICM42688_InterfaceProtocol_t;
 
 
+typedef struct
+{
+	ICM42688_UI_DRDY_INT_CLEAR_t drdy_int_clear;
+	ICM42688_FIFO_THS_INT_CLEAR_t fifo_ths_int_clear;
+	ICM42688_FIFO_FULL_INT_CLEAR_t fifo_full_int_clear;
+	ICM42688_INT_TPULSE_DURATION_t tpulse_duration;
+	ICM42688_INT_TDEASSERT_DISABLE_t tdeassert_dis;
+} ICM42688_INT_Config_t;
+
+
+typedef struct
+{
+	int pin;
+	ICM42688_INT_MODE_t mode;
+	ICM42688_INT_DRIVE_CIRCUIT_t drive_circuit;
+	ICM42688_INT_POLARITY_t polarity;
+	bool ui_fsync_en;
+	bool pll_rdy_en;
+	bool reset_done_en;
+	bool ui_drdy_en;
+	bool fifo_ths_en;
+	bool fifo_full_en;
+	bool ui_agc_rdy_en;
+	bool i3c_err_en;
+	bool smd_en;
+	bool wom_z_en;
+	bool wom_y_en;
+	bool wom_x_en;
+} ICM42688_INT_Channel_Config_t;
+
+
 typedef struct __ICM42688_CONFIG
 {
 	ICM42688_InterfaceProtocol_t protocol;
@@ -65,47 +96,9 @@ typedef struct __ICM42688_CONFIG
 	} gyro;
 	struct __Interrupt
 	{
-		ICM42688_UI_DRDY_INT_CLEAR_t drdy_int_clear;
-		ICM42688_FIFO_THS_INT_CLEAR_t fifo_ths_int_clear;
-		ICM42688_FIFO_FULL_INT_CLEAR_t fifo_full_int_clear;
-		ICM42688_INT_TPULSE_DURATION_t tpulse_duration;
-		ICM42688_INT_TDEASSERT_DISABLE_t tdeassert_dis;
-		struct __INT1 {
-			int pin;
-			ICM42688_INT1_MODE_t mode;
-			ICM42688_INT1_DRIVE_CIRCUIT_t drive_circuit;
-			ICM42688_INT1_POLARITY_t polarity;
-			bool ui_fsync_en;
-			bool pll_rdy_en;
-			bool reset_done_en;
-			bool ui_drdy_en;
-			bool fifo_ths_en;
-			bool fifo_full_en;
-			bool ui_agc_rdy_en;
-			bool i3c_err_en;
-			bool smd_en;
-			bool wom_z_en;
-			bool wom_y_en;
-			bool wom_x_en;
-		} int1;
-		struct __INT2 {
-			int pin;
-			ICM42688_INT2_MODE_t mode;
-			ICM42688_INT2_DRIVE_CIRCUIT_t drive_circuit;
-			ICM42688_INT2_POLARITY_t polarity;
-			bool ui_fsync_en;
-			bool pll_rdy_en;
-			bool reset_done_en;
-			bool ui_drdy_en;
-			bool fifo_ths_en;
-			bool fifo_full_en;
-			bool ui_agc_rdy_en;
-			bool i3c_err_en;
-			bool smd_en;
-			bool wom_z_en;
-			bool wom_y_en;
-			bool wom_x_en;
-		} int2;
+		ICM42688_INT_Config_t cfg;
+		ICM42688_INT_Channel_Config_t int1;
+		ICM42688_INT_Channel_Config_t int2;
 	} interrupt;
 	struct {
 		ICM42688_FIFO_MODE_t mode;
@@ -180,6 +173,9 @@ void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr);
 void ICM42688_setAccelODR(ICM42688_t *hicm, ICM42688_ACCEL_ODR_t odr);
 void ICM42688_setGyroScale(ICM42688_t *hicm, ICM42688_GYRO_FS_SEL_t scale);
 void ICM42688_setAccelScale(ICM42688_t *hicm, ICM42688_ACCEL_FS_SEL_t scale);
+void ICM42688_setInterruptConfig(ICM42688_t *hicm, ICM42688_INT_Config_t *cfg);
+void ICM42688_setINT1Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch);
+void ICM42688_setINT2Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch);
 
 void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
