@@ -7,35 +7,62 @@
 #include "ICM42688_Interface.h"
 
 #include "ICM42688_RegMap.h"
+#include "freertos/projdefs.h"
 #include "hal/gpio_types.h"
 #include "hal/spi_types.h"
 #include "pin_defs.h"
+#include "portmacro.h"
 
 ICM42688_t hicm;
-
+static QueueHandle_t button_queue = NULL;
 
 volatile bool anm;
+int32_t raw[6];
+
 
 static void IRAM_ATTR ANMtrap_handler(void* arg)
 {
-	uint8_t dummy[2];
-	hicm.readRegister(ICM_0_INT_STATUS, dummy);
-	hicm.readRegister(ICM_0_FIFO_COUNTH, dummy);
-	hicm.readRegister(ICM_0_FIFO_COUNTL, dummy+1);
-	//printf("%u\t", (uint16_t)dummy[0]<<8 | dummy[1]);
-	int32_t raw[6];
-	ICM42688_readFIFO(&hicm, raw);
-	ICM42688_calculateAccel(&hicm, raw+3);
-	ICM42688_calculateGyro(&hicm, raw);
-	//printf("%ld, %ld, %ld, %f, %f, %f\n", raw[0], raw[1], raw[2], hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
-//	printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
-	anm = true;
+//	uint8_t dummy[2];
+//	hicm.readRegister(ICM_0_INT_STATUS, dummy);
+//	hicm.readRegister(ICM_0_FIFO_COUNTH, dummy);
+//	hicm.readRegister(ICM_0_FIFO_COUNTL, dummy+1);
+//	//printf("%u\t", (uint16_t)dummy[0]<<8 | dummy[1]);
+//	
+//	ICM42688_readFIFO(&hicm, raw);
+//	
+//	//printf("%ld, %ld, %ld, %f, %f, %f\n", raw[0], raw[1], raw[2], hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
+////	printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
+//	anm = true;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE, xResult;
+	bool ready = true;
+	xResult = xQueueSendFromISR(button_queue, &ready, &xHigherPriorityTaskWoken);
+	// Если высокоприоритетная задача ждет этого события, переключаем управление
+  	if (xResult == pdPASS) {
+    	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+  	};
 }
 
 
 void IRAM_ATTR task0(void *pvParameters)
 {
-	
+	bool res;
+	while (1)
+	{
+	xQueueReceive(button_queue, &res, portMAX_DELAY);
+	if (res)
+	{
+	uint8_t dummy[2];
+	hicm.readRegister(ICM_0_INT_STATUS, dummy);
+	hicm.readRegister(ICM_0_FIFO_COUNTH, dummy);
+	hicm.readRegister(ICM_0_FIFO_COUNTL, dummy+1);
+	//printf("%u\t", (uint16_t)dummy[0]<<8 | dummy[1]);
+	ICM42688_readFIFO(&hicm, raw);
+	ICM42688_calculateAccel(&hicm, raw+3);
+	ICM42688_calculateGyro(&hicm, raw);
+	//printf("%ld, %ld, %ld, %f, %f, %f\n", raw[0], raw[1], raw[2], hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
+	printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
+	}
+	}
 }
 
 
@@ -68,6 +95,10 @@ void app_main()
 		.interrupt.int1.drive_circuit = INT1_PUSH_PULL,
 		.interrupt.int1.fifo_ths_en = true,
 	};
+	
+	button_queue = xQueueCreate(32, sizeof(bool));
+	// Запускаем задачу управления светодиодом
+  	xTaskCreatePinnedToCore(task0, "imu", 4096, NULL, 10, NULL, 0);
     
   	// Настраиваем вывод для кнопки
   	gpio_set_direction(GINT1_PINNUM, GPIO_MODE_INPUT);
@@ -83,7 +114,9 @@ void app_main()
   	// Регистрируем обработчик прерывания на нажатие кнопки
   	gpio_isr_handler_add(GINT1_PINNUM, ANMtrap_handler, NULL);
   	// Устанавливаем тип события для генерации прерывания - по низкому уровню
-  	gpio_set_intr_type(GINT1_PINNUM, GPIO_INTR_LOW_LEVEL);
+  	// Важно генерить прерывания именно по отрицательному фронту, а не по
+  	// низкому уровню, ибо иначе будет interrupt wdt timeout error
+  	gpio_set_intr_type(GINT1_PINNUM, GPIO_INTR_NEGEDGE);
   	// Разрешаем использование прерываний
   	gpio_intr_enable(GINT1_PINNUM);
   	
@@ -93,10 +126,12 @@ void app_main()
   	
   	while (1)
   	{
-		if (anm)
-		{
-			printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
-			anm = false;
-		}
+//		if (anm)
+//		{
+//			ICM42688_calculateAccel(&hicm, raw+3);
+//			ICM42688_calculateGyro(&hicm, raw);
+//			printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
+//			anm = false;
+//		}
 	}
 }
