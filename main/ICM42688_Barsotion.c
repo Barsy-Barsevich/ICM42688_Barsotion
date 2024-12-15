@@ -42,115 +42,14 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	ICM42688_setGyroODR(hicm, cfg->gyro.odr);
 	ICM42688_setAccelScale(hicm, cfg->accel.fs_sel);
 	ICM42688_setAccelODR(hicm, cfg->accel.odr);
-	
-	
-//	/* INT_CONFIG */
-//	uint8_t int_cfg = 0;
-//	int_cfg |= cfg->interrupt.int2.mode;
-//	int_cfg |= cfg->interrupt.int2.drive_circuit;
-//	int_cfg |= cfg->interrupt.int2.polarity;
-//	int_cfg <<= ICM_INT_CONFIG_INT2;
-//	int_cfg |= cfg->interrupt.int1.mode;
-//	int_cfg |= cfg->interrupt.int1.drive_circuit;
-//	int_cfg |= cfg->interrupt.int1.polarity;
-//	hicm->writeRegister(ICM_0_INT_CONFIG, int_cfg);
-////	/* INT_CONFIG0 */
-////	uint8_t int_cfg0 = 0;
-////	int_cfg0 |= cfg->interrupt.cfg.drdy_int_clear;
-////	int_cfg0 |= cfg->interrupt.cfg.fifo_ths_int_clear;
-////	int_cfg0 |= cfg->interrupt.cfg.fifo_full_int_clear;
-////	hicm->writeRegister(ICM_0_INT_CONFIG0, int_cfg0);
-////	/* INT_CONFIG1 */
-////	uint8_t int_cfg1 = 0;
-////	int_cfg1 |= cfg->interrupt.cfg.tpulse_duration;
-////	int_cfg1 |= cfg->interrupt.cfg.tdeassert_dis;
-////	int_cfg1 |= 0<<ICM_INT_CONFIG1_INT_ASYNC_RESET;
-////	hicm->writeRegister(ICM_0_INT_CONFIG1, int_cfg1);
-//	/* INT_SOURCE0 */
-//	uint8_t int_src0 = 0;
-//	if (cfg->interrupt.int1.ui_fsync_en)
-//		int_src0 |= 1<<ICM_INT_SOURCE0_UI_FSYNC_INT1_EN;
-//	if (cfg->interrupt.int1.pll_rdy_en)
-//		int_src0 |= 1<<ICM_INT_SOURCE0_PLL_RDY_INT1_EN;
-//	if (cfg->interrupt.int1.reset_done_en)
-//		int_src0 |= 1<<ICM_INT_SOURCE0_RESET_DONE_INT1_EN;
-//	if (cfg->interrupt.int1.ui_drdy_en)
-//		int_src0 |= 1<<ICM_INT_SOURCE0_UI_DRDY_INT1_EN;
-//	if (cfg->interrupt.int1.fifo_ths_en)
-//		int_src0 |= 1<<ICM_INT_SOURCE0_FIFO_THS_INT1_EN;
-//	if (cfg->interrupt.int1.fifo_full_en)
-//		int_src0 |= 1<<ICM_INT_SOURCE0_FIFO_FULL_INT1_EN;
-//	if (cfg->interrupt.int1.ui_agc_rdy_en)
-//		int_src0 |= 1<<ICM_INT_SOURCE0_UI_AGC_RDY_INT1_EN;
-//	hicm->writeRegister(ICM_0_INT_SOURCE0, int_src0);
-//	/* INT_SOURCE1 */
-//	uint8_t int_src1 = 0;
-//	if (cfg->interrupt.int1.i3c_err_en)
-//		int_src1 |= 1<<ICM_INT_SOURCE1_I3C_PROTOCOL_ERROR_INT1_EN;
-//	if (cfg->interrupt.int1.smd_en)
-//		int_src1 |= 1<<ICM_INT_SOURCE1_SMD_INT1_EN;
-//	if (cfg->interrupt.int1.wom_x_en)
-//		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_X_INT1_EN;
-//	if (cfg->interrupt.int1.wom_y_en)
-//		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_Y_INT1_EN;
-//	if (cfg->interrupt.int1.wom_z_en)
-//		int_src1 |= 1<<ICM_INT_SOURCE1_WOM_Z_INT1_EN;
-//	hicm->writeRegister(ICM_0_INT_SOURCE1, int_src1);
-//	/* INT_SOURCE3 */
-//	uint8_t int_src3 = 0;
-//	if (cfg->interrupt.int2.ui_fsync_en)
-//		int_src3 |= 1<<ICM_INT_SOURCE3_UI_FSYNC_INT1_EN;
-//	if (cfg->interrupt.int2.pll_rdy_en)
-//		int_src3 |= 1<<ICM_INT_SOURCE3_PLL_RDY_INT1_EN;
-//	if (cfg->interrupt.int2.reset_done_en)
-//		int_src3 |= 1<<ICM_INT_SOURCE3_RESET_DONE_INT1_EN;
-//	if (cfg->interrupt.int2.ui_drdy_en)
-//		int_src3 |= 1<<ICM_INT_SOURCE3_UI_DRDY_INT1_EN;
-//	if (cfg->interrupt.int2.fifo_ths_en)
-//		int_src3 |= 1<<ICM_INT_SOURCE3_FIFO_THS_INT1_EN;
-//	if (cfg->interrupt.int2.fifo_full_en)
-//		int_src3 |= 1<<ICM_INT_SOURCE3_FIFO_FULL_INT1_EN;
-//	if (cfg->interrupt.int2.ui_agc_rdy_en)
-//		int_src3 |= 1<<ICM_INT_SOURCE3_UI_AGC_RDY_INT1_EN;
-//	hicm->writeRegister(ICM_0_INT_SOURCE3, int_src3);
-//	/* INT_SOURCE1 */
-//	uint8_t int_src4 = 0;
-//	if (cfg->interrupt.int2.i3c_err_en)
-//		int_src4 |= 1<<ICM_INT_SOURCE4_I3C_PROTOCOL_ERROR_INT1_EN;
-//	if (cfg->interrupt.int2.smd_en)
-//		int_src4 |= 1<<ICM_INT_SOURCE4_SMD_INT1_EN;
-//	if (cfg->interrupt.int2.wom_x_en)
-//		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_X_INT1_EN;
-//	if (cfg->interrupt.int2.wom_y_en)
-//		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_Y_INT1_EN;
-//	if (cfg->interrupt.int2.wom_z_en)
-//		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_Z_INT1_EN;
-//	hicm->writeRegister(ICM_0_INT_SOURCE4, int_src4);
+	/* Interrupt */
 	ICM42688_setInterruptConfig(hicm, &(cfg->interrupt.cfg));
 	ICM42688_setINT1Config(hicm, &(cfg->interrupt.int1));
 	ICM42688_setINT2Config(hicm, &(cfg->interrupt.int2));
-	
-	/* SIGNAL_PATH_RESET */
-	uint8_t sig_path_res = 1<<1;
-	hicm->writeRegister(ICM_0_SIGNAL_PATH_RESET, sig_path_res);
-	/* FIFO_CONFIG */
-	uint8_t fifo_cfg = 0;
-	fifo_cfg |= cfg->fifo.mode;
-	hicm->writeRegister(ICM_0_FIFO_CONFIG, fifo_cfg);
-	/* FIFO_CONFIG1 */
-	uint8_t fifo_cfg1 = 0;
-	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_RESUME_PARTIAL_RD;
-	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_WM_GT_TH;
-	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_HIRES_EN;
-	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_TMST_FSYNC_EN;
-	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_TEMP_EN;
-	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_GYRO_EN;
-	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_ACCEL_EN;
-	printf("Podstava: %02X\n", fifo_cfg1);
-	hicm->writeRegister(ICM_0_FIFO_CONFIG1, fifo_cfg1);
-	/* FIFO_CONFIG2-3 */
-	hicm->writeRegister(ICM_0_FIFO_CONFIG2, cfg->fifo.watermark & 0xFF);
-	hicm->writeRegister(ICM_0_FIFO_CONFIG3, (cfg->fifo.watermark>>8)&0x0F);
+	/* FIFO */
+	ICM42688_flushFIFO(hicm);
+	ICM42688_setFIFOMode(hicm, cfg->fifo.mode);
+	ICM42688_setFIFOWatermark(hicm, cfg->fifo.watermark);
 }
 
 /**
@@ -482,4 +381,32 @@ void ICM42688_setINT2Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)
 	if (ch->wom_z_en)
 		int_src4 |= 1<<ICM_INT_SOURCE4_WOM_Z_INT1_EN;
 	hicm->writeRegister(ICM_0_INT_SOURCE4, int_src4);
+}
+
+
+void ICM42688_setFIFOMode(ICM42688_t *hicm, ICM42688_FIFO_MODE_t mode)
+{
+	/* FIFO_CONFIG */
+	uint8_t fifo_cfg = 0;
+	fifo_cfg |= mode;
+	hicm->writeRegister(ICM_0_FIFO_CONFIG, fifo_cfg);
+	/* FIFO_CONFIG1 */
+	uint8_t fifo_cfg1 = 0;
+	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_RESUME_PARTIAL_RD;
+	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_WM_GT_TH;
+	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_HIRES_EN;
+	fifo_cfg1 |= 0<<ICM_FIFO_CONFIG1_FIFO_TMST_FSYNC_EN;
+	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_TEMP_EN;
+	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_GYRO_EN;
+	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_ACCEL_EN;
+	printf("Podstava: %02X\n", fifo_cfg1);
+	hicm->writeRegister(ICM_0_FIFO_CONFIG1, fifo_cfg1);
+}
+
+
+void ICM42688_setFIFOWatermark(ICM42688_t *hicm, uint16_t watermark)
+{
+	/* FIFO_CONFIG2-3 */
+	hicm->writeRegister(ICM_0_FIFO_CONFIG2, watermark & 0xFF);
+	hicm->writeRegister(ICM_0_FIFO_CONFIG3, (watermark>>8)&0x0F);
 }
