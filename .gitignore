@@ -1,3 +1,4 @@
 sdkconfig*
 build/*
 dependencies.lock
+docs/*.xcf
