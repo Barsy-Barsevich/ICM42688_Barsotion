@@ -145,9 +145,9 @@ void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw)
  */
 void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw)
 {
-	hicm->gyro.x = raw[0] * hicm->gyro_scale - hicm->gyro_bias.x;
-	hicm->gyro.y = raw[1] * hicm->gyro_scale - hicm->gyro_bias.y;
-	hicm->gyro.z = raw[2] * hicm->gyro_scale - hicm->gyro_bias.z;
+	hicm->gyro.x = raw[0] * hicm->gyro_scale + hicm->gyro_bias.x;
+	hicm->gyro.y = raw[1] * hicm->gyro_scale + hicm->gyro_bias.y;
+	hicm->gyro.z = raw[2] * hicm->gyro_scale + hicm->gyro_bias.z;
 }
 
 /**
@@ -399,7 +399,6 @@ void ICM42688_setFIFOMode(ICM42688_t *hicm, ICM42688_FIFO_MODE_t mode)
 	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_TEMP_EN;
 	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_GYRO_EN;
 	fifo_cfg1 |= 1<<ICM_FIFO_CONFIG1_FIFO_ACCEL_EN;
-	printf("Podstava: %02X\n", fifo_cfg1);
 	hicm->writeRegister(ICM_0_FIFO_CONFIG1, fifo_cfg1);
 }
 
