@@ -55,6 +55,47 @@ void IRAM_ATTR IMU_IRQ_process(void *pvParameters)
 }
 
 
+static void calibrateGyro()
+{
+	ICM42688_setFIFOMode(&hicm, FIFO_BYPASS_MODE);
+	ICM42688_setGyroODR(&hicm, GYRO_ODR_4KHZ);
+	ICM42688_flushFIFO(&hicm);
+	size_t counter = 0;
+	int32_t raw_data[6];
+	ICM42688_XYZ_t med = {0};
+	ICM42688_setFIFOMode(&hicm, FIFO_STREAM_MODE);
+	
+	while (counter < 200)
+	{
+		if (ICM42688_FIFO_THS_IRQ_Check(&hicm))
+		{
+			counter += 1;
+			ICM42688_readFIFO(&hicm, raw_data);
+			ICM42688_calculateGyro(&hicm, raw_data);
+			med.x += hicm.gyro.x;
+			med.y += hicm.gyro.y;
+			med.z += hicm.gyro.z;
+		}
+	}
+	med.x /= 200;
+	med.y /= 200;
+	med.z /= 200;
+	hicm.gyro_bias.x = -med.x;
+	hicm.gyro_bias.y = -med.y;
+	hicm.gyro_bias.z = -med.z;
+	
+	ICM42688_setFIFOMode(&hicm, FIFO_BYPASS_MODE);
+	ICM42688_setGyroODR(&hicm, GYRO_ODR_12p5HZ);
+	ICM42688_flushFIFO(&hicm);
+	ICM42688_setFIFOMode(&hicm, FIFO_STREAM_MODE);
+	
+	
+}
+
+
+
+
+
 void app_main() 
 {
 	printf("Hello from app_main!\n");
@@ -83,8 +124,10 @@ void app_main()
 		.interrupt.cfg.tdeassert_dis = INT_TDEASSERT_ENABLE,
 		.interrupt.cfg.tpulse_duration = INT_TPULSE_8US,
 		.interrupt.int1.drive_circuit = PUSH_PULL,
-		.interrupt.int1.fifo_ths_en = true,
+		.interrupt.int1.fifo_ths_en = false,
 	};
+	
+	//calibrateGyro();
 	
 	button_queue = xQueueCreate(32, sizeof(bool));
 	// Запускаем задачу управления светодиодом
@@ -111,6 +154,14 @@ void app_main()
   	gpio_intr_enable(GINT1_PINNUM);
   	
   	ICM42688_Init(&hicm, &icm_cfg);
+  	
+	calibrateGyro();
+	
+	ICM42688_INT_Channel_Config_t int1_cfg = {
+		.fifo_ths_en = true,
+		.drive_circuit = PUSH_PULL,
+	};
+	ICM42688_setINT1Config(&hicm, &int1_cfg);
   	
   	anm = false;
   	
