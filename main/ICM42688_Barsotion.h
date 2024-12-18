@@ -79,7 +79,7 @@ typedef struct __ICM42688_CONFIG
 	struct {
 		ICM42688_ACCEL_ENABLE_t enable;
 		ICM42688_ACCEL_MODE_t mode;
-		ICM42688_ACCEL_FS_SEL_t fs_sel;
+		ICM42688_ACCEL_FS_SEL_t scale;
 		ICM42688_ACCEL_ODR_t odr;
 		ICM42688_ACCEL_UI_FILT_BW_t ui_filt_bw;
 		ICM42688_ACCEL_UI_FILT_ORD_t ui_filt_ord;
@@ -88,7 +88,7 @@ typedef struct __ICM42688_CONFIG
 	struct {
 		ICM42688_GYRO_ENABLE_t enable;
 		ICM42688_GYRO_MODE_t mode;
-		ICM42688_GYRO_FS_SEL_t fs_sel;
+		ICM42688_GYRO_FS_SEL_t scale;
 		ICM42688_GYRO_ODR_t odr;
 		ICM42688_GYRO_UI_FILT_BW_t ui_filt_bw;
 		ICM42688_GYRO_UI_FILT_ORD_t ui_filt_ord;
@@ -129,14 +129,14 @@ typedef struct __ICM42688_Descriptor
     //interface
     ICM42688_Interface_t *interface;
     //coefficients
-    float accel_coef;
     float gyro_coef;
-    float gyro_scale;
-    float accel_scale;
+    float accel_coef;
     size_t gyro_data_bit;
     size_t accel_data_bit;
     ICM42688_ACCEL_ODR_t accel_odr;
     ICM42688_GYRO_ODR_t gyro_odr;
+    ICM42688_ACCEL_FS_SEL_t accel_scale;
+    ICM42688_GYRO_FS_SEL_t gyro_scale;
     //output data
     ICM42688_XYZ_t accel;
     ICM42688_XYZ_t gyro;
