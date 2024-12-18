@@ -55,48 +55,6 @@ void IRAM_ATTR IMU_IRQ_process(void *pvParameters)
 }
 
 
-static void calibrateGyro()
-{
-	ICM42688_setFIFOMode(&hicm, FIFO_BYPASS_MODE);
-	ICM42688_GYRO_ODR_t odr = hicm.gyro_odr; 
-	ICM42688_setGyroODR(&hicm, GYRO_ODR_4KHZ);
-	ICM42688_flushFIFO(&hicm);
-	size_t counter = 0;
-	int32_t raw_data[6];
-	ICM42688_XYZ_t med = {0};
-	ICM42688_setFIFOMode(&hicm, FIFO_STREAM_MODE);
-	
-	while (counter < 200)
-	{
-		if (ICM42688_FIFO_THS_IRQ_Check(&hicm))
-		{
-			counter += 1;
-			ICM42688_readFIFO(&hicm, raw_data);
-			ICM42688_calculateGyro(&hicm, raw_data);
-			med.x += hicm.gyro.x;
-			med.y += hicm.gyro.y;
-			med.z += hicm.gyro.z;
-		}
-	}
-	med.x /= 200;
-	med.y /= 200;
-	med.z /= 200;
-	hicm.gyro_bias.x = -med.x;
-	hicm.gyro_bias.y = -med.y;
-	hicm.gyro_bias.z = -med.z;
-	
-	ICM42688_setFIFOMode(&hicm, FIFO_BYPASS_MODE);
-	ICM42688_setGyroODR(&hicm, odr);
-	ICM42688_flushFIFO(&hicm);
-	ICM42688_setFIFOMode(&hicm, FIFO_STREAM_MODE);
-	
-	
-}
-
-
-
-
-
 void app_main() 
 {
 	printf("Hello from app_main!\n");
@@ -114,11 +72,11 @@ void app_main()
 		.accel.enable = ENABLE_XA | ENABLE_YA | ENABLE_ZA,
 		.accel.mode = ACCEL_LN_MODE,
 		.accel.odr = ACCEL_ODR_12p5HZ,
-		.accel.fs_sel = ACCEL_16G_COEF,
+		.accel.scale = ACCEL_16G_COEF,
 		.gyro.enable = ENABLE_XG | ENABLE_YG | ENABLE_ZG,
 		.gyro.mode = GYRO_LN_MODE,
 		.gyro.odr = GYRO_ODR_12p5HZ,
-		.gyro.fs_sel = GYRO_FS_SEL_2000DPS,
+		.gyro.scale = GYRO_FS_SEL_2000DPS,
 		.fifo.mode = FIFO_STREAM_MODE,
 		.fifo.watermark = 20,
 		.interrupt.cfg.fifo_ths_int_clear = FIFO_THS_INT_CLEAR_ON_STATUS_BIT_READ,
@@ -156,7 +114,8 @@ void app_main()
   	
   	ICM42688_Init(&hicm, &icm_cfg);
   	
-	calibrateGyro();
+	//calibrateGyro();
+	ICM42688_calibrateGyro(&hicm);
 	
 	ICM42688_INT_Channel_Config_t int1_cfg = {
 		.fifo_ths_en = true,

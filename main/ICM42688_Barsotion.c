@@ -390,6 +390,7 @@ void ICM42688_setINT2Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)
 
 void ICM42688_setFIFOMode(ICM42688_t *hicm, ICM42688_FIFO_MODE_t mode)
 {
+	hicm->fifo_mode = mode;
 	/* FIFO_CONFIG */
 	uint8_t fifo_cfg = 0;
 	fifo_cfg |= mode;
@@ -421,7 +422,7 @@ void ICM42688_calibrateGyro(ICM42688_t *hicm)
 	ICM42688_FIFO_MODE_t fifo_mode = hicm->fifo_mode;
 	ICM42688_GYRO_ODR_t odr = hicm->gyro_odr;
 	ICM42688_setFIFOMode(hicm, FIFO_BYPASS_MODE);
-	ICM42688_setGyroODR(hicm, GYRO_ODR_4KHZ);
+	ICM42688_setGyroODR(hicm, GYRO_ODR_1KHZ);
 	ICM42688_flushFIFO(hicm);
 	size_t counter = 0;
 	int32_t raw_data[6];
