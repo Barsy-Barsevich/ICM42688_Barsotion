@@ -58,6 +58,7 @@ void IRAM_ATTR IMU_IRQ_process(void *pvParameters)
 static void calibrateGyro()
 {
 	ICM42688_setFIFOMode(&hicm, FIFO_BYPASS_MODE);
+	ICM42688_GYRO_ODR_t odr = hicm.gyro_odr; 
 	ICM42688_setGyroODR(&hicm, GYRO_ODR_4KHZ);
 	ICM42688_flushFIFO(&hicm);
 	size_t counter = 0;
@@ -85,7 +86,7 @@ static void calibrateGyro()
 	hicm.gyro_bias.z = -med.z;
 	
 	ICM42688_setFIFOMode(&hicm, FIFO_BYPASS_MODE);
-	ICM42688_setGyroODR(&hicm, GYRO_ODR_12p5HZ);
+	ICM42688_setGyroODR(&hicm, odr);
 	ICM42688_flushFIFO(&hicm);
 	ICM42688_setFIFOMode(&hicm, FIFO_STREAM_MODE);
 	
@@ -162,6 +163,7 @@ void app_main()
 		.drive_circuit = PUSH_PULL,
 	};
 	ICM42688_setINT1Config(&hicm, &int1_cfg);
+	ICM42688_setGyroODR(&hicm, GYRO_ODR_200HZ);
   	
   	anm = false;
   	

@@ -135,6 +135,8 @@ typedef struct __ICM42688_Descriptor
     float accel_scale;
     size_t gyro_data_bit;
     size_t accel_data_bit;
+    ICM42688_ACCEL_ODR_t accel_odr;
+    ICM42688_GYRO_ODR_t gyro_odr;
     //output data
     ICM42688_XYZ_t accel;
     ICM42688_XYZ_t gyro;
