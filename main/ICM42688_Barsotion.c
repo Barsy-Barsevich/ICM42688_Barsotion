@@ -226,6 +226,7 @@ void ICM42688_flushFIFO(ICM42688_t *hicm)
 
 void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr)
 {
+	hicm->gyro_odr = odr;
 	uint8_t gyro_cfg0;
 	hicm->readRegister(ICM_0_GYRO_CONFIG0, &gyro_cfg0);
 	gyro_cfg0 = (gyro_cfg0 & 0xF0) | odr;
@@ -235,6 +236,7 @@ void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr)
 
 void ICM42688_setAccelODR(ICM42688_t *hicm, ICM42688_ACCEL_ODR_t odr)
 {
+	hicm->accel_odr = odr;
 	uint8_t acc_cfg0;
 	hicm->readRegister(ICM_0_ACCEL_CONFIG0, &acc_cfg0);
 	acc_cfg0 = (acc_cfg0 & 0xF0) | odr;
