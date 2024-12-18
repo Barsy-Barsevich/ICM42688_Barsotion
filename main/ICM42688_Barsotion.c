@@ -413,3 +413,42 @@ void ICM42688_setFIFOWatermark(ICM42688_t *hicm, uint16_t watermark)
 	hicm->writeRegister(ICM_0_FIFO_CONFIG2, watermark & 0xFF);
 	hicm->writeRegister(ICM_0_FIFO_CONFIG3, (watermark>>8)&0x0F);
 }
+
+
+void ICM42688_calibrateGyro(ICM42688_t *hicm)
+{
+	const int iter_number = 1000;
+	ICM42688_FIFO_MODE_t fifo_mode = hicm->fifo_mode;
+	ICM42688_GYRO_ODR_t odr = hicm->gyro_odr;
+	ICM42688_setFIFOMode(hicm, FIFO_BYPASS_MODE);
+	ICM42688_setGyroODR(hicm, GYRO_ODR_4KHZ);
+	ICM42688_flushFIFO(hicm);
+	size_t counter = 0;
+	int32_t raw_data[6];
+	ICM42688_XYZ_t med = {0};
+	ICM42688_setFIFOMode(hicm, FIFO_STREAM_MODE);
+	
+	while (counter < iter_number)
+	{
+		if (ICM42688_FIFO_THS_IRQ_Check(hicm))
+		{
+			counter += 1;
+			ICM42688_readFIFO(hicm, raw_data);
+			ICM42688_calculateGyro(hicm, raw_data);
+			med.x += hicm->gyro.x;
+			med.y += hicm->gyro.y;
+			med.z += hicm->gyro.z;
+		}
+	}
+	med.x /= iter_number;
+	med.y /= iter_number;
+	med.z /= iter_number;
+	hicm->gyro_bias.x = -med.x;
+	hicm->gyro_bias.y = -med.y;
+	hicm->gyro_bias.z = -med.z;
+	
+	ICM42688_setFIFOMode(hicm, FIFO_BYPASS_MODE);
+	ICM42688_setGyroODR(hicm, odr);
+	ICM42688_flushFIFO(hicm);
+	ICM42688_setFIFOMode(hicm, fifo_mode);
+}
