@@ -137,6 +137,7 @@ typedef struct __ICM42688_Descriptor
     ICM42688_GYRO_ODR_t gyro_odr;
     ICM42688_ACCEL_FS_SEL_t accel_scale;
     ICM42688_GYRO_FS_SEL_t gyro_scale;
+    ICM42688_FIFO_MODE_t fifo_mode;
     //output data
     ICM42688_XYZ_t accel;
     ICM42688_XYZ_t gyro;
@@ -183,6 +184,8 @@ void ICM42688_setFIFOWatermark(ICM42688_t *hicm, uint16_t watermark);
 
 void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
+
+void ICM42688_calibrateGyro(ICM42688_t *hicm);
 
 
 bool ICM42688_UI_FSYNC_IRQ_Check(ICM42688_t *hicm);
