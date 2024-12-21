@@ -160,18 +160,16 @@ typedef struct __ICM42688_Descriptor
 
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg);
-
 void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank);
-
+void ICM42688_flushFIFO(ICM42688_t *hicm);
+/* Readings */
 void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf);
 void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw);
 void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw);
-
+/* Calculations */
 void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw);
-void ICM42688_filterGyro(ICM42688_t *hicm);
 void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw);
-
-void ICM42688_flushFIFO(ICM42688_t *hicm);
+/* Settings */
 void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr);
 void ICM42688_setAccelODR(ICM42688_t *hicm, ICM42688_ACCEL_ODR_t odr);
 void ICM42688_setGyroScale(ICM42688_t *hicm, ICM42688_GYRO_FS_SEL_t scale);
@@ -181,13 +179,12 @@ void ICM42688_setINT1Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)
 void ICM42688_setINT2Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch);
 void ICM42688_setFIFOMode(ICM42688_t *hicm, ICM42688_FIFO_MODE_t mode);
 void ICM42688_setFIFOWatermark(ICM42688_t *hicm, uint16_t watermark);
-
+/* Filtering */
 void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
-
+/* Calibration */
 void ICM42688_calibrateGyro(ICM42688_t *hicm);
-
-
+/* IRQ flag status check */
 bool ICM42688_UI_FSYNC_IRQ_Check(ICM42688_t *hicm);
 bool ICM42688_PLL_RDY_IRQ_Check(ICM42688_t *hicm);
 bool ICM42688_RESET_DONE_IRQ_Check(ICM42688_t *hicm);

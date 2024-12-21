@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "ICM42688_Barsotion.h"
@@ -49,9 +50,61 @@ void IRAM_ATTR IMU_IRQ_process(void *pvParameters)
 			ICM42688_calculateAccel(&hicm, raw+3);
 			ICM42688_calculateGyro(&hicm, raw);
 			//printf("%ld, %ld, %ld, %f, %f, %f\n", raw[0], raw[1], raw[2], hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
-			printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
+			//printf("%f, %f, %f\n", hicm.gyro.x, hicm.gyro.y, hicm.gyro.z);
+			printf("%f, %f, %f\n", hicm.accel.x, hicm.accel.y, hicm.accel.z);
 		}
 	}
+}
+
+static float vReal[4096];
+static float vImag[4096];
+
+#include "microFFT.h"
+void spectreGyro()
+{
+	const int iter_number = 4096;
+	const int freq = 4000;
+	ICM42688_FIFO_MODE_t fifo_mode = hicm.fifo_mode;
+	ICM42688_GYRO_ODR_t odr = hicm.gyro_odr;
+	ICM42688_setFIFOMode(&hicm, FIFO_BYPASS_MODE);
+	ICM42688_setGyroODR(&hicm, GYRO_ODR_4KHZ);
+	ICM42688_flushFIFO(&hicm);
+	size_t counter = 0;
+	int32_t raw_data[6];
+//	float vReal[iter_number];
+//	float vImag[iter_number];
+//	float* vReal = (float*)malloc(iter_number);
+//	float* vImag = (float*)malloc(iter_number);
+	ICM42688_setFIFOMode(&hicm, FIFO_STREAM_MODE);
+	
+	while (counter < iter_number)
+	{
+		if (ICM42688_FIFO_THS_IRQ_Check(&hicm))
+		{
+			counter += 1;
+			ICM42688_readFIFO(&hicm, raw_data);
+			ICM42688_calculateGyro(&hicm, raw_data);
+			vReal[counter] = hicm.gyro.x;
+			vImag[counter] = 0.0;
+		}
+	}
+	
+	FFT_Init(vReal, vImag, iter_number, freq);
+	
+	FFT_Windowing(FFT_WIN_TYP_HAMMING, FFT_FORWARD); // Recommended use for high frequencies. Relative to Sampling Frequency. In this case: 70Hz
+    FFT_Compute(FFT_FORWARD);
+    FFT_ComplexToMagnitude();
+    
+    for (size_t i=0; i<iter_number; i++)
+    {
+		float abscissa = (((float)i * freq) / iter_number);
+		if ((i % 4) == 0) printf("%f    %f\n", abscissa, vReal[i]);
+	}
+	
+	ICM42688_setFIFOMode(&hicm, FIFO_BYPASS_MODE);
+	ICM42688_setGyroODR(&hicm, odr);
+	ICM42688_flushFIFO(&hicm);
+	ICM42688_setFIFOMode(&hicm, fifo_mode);
 }
 
 
@@ -68,7 +121,7 @@ void app_main()
 		.spi.mosi_pin = MOSI_PINNUM,
 		.spi.sck_pin = CLK_PINNUM,
 		.spi.cs_pin = CS_PINNUM,
-		.spi.sck_freq = 10000000,
+		.spi.sck_freq = 50000000,
 		.accel.enable = ENABLE_XA | ENABLE_YA | ENABLE_ZA,
 		.accel.mode = ACCEL_LN_MODE,
 		.accel.odr = ACCEL_ODR_12p5HZ,
@@ -117,12 +170,15 @@ void app_main()
 	//calibrateGyro();
 	ICM42688_calibrateGyro(&hicm);
 	
+	spectreGyro();
+	
 	ICM42688_INT_Channel_Config_t int1_cfg = {
 		.fifo_ths_en = true,
 		.drive_circuit = PUSH_PULL,
 	};
-	ICM42688_setINT1Config(&hicm, &int1_cfg);
+	//ICM42688_setINT1Config(&hicm, &int1_cfg);
 	ICM42688_setGyroODR(&hicm, GYRO_ODR_200HZ);
+	ICM42688_setAccelODR(&hicm, ACCEL_ODR_200HZ);
   	
   	anm = false;
   	
