@@ -179,6 +179,8 @@ void ICM42688_setINT1Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)
 void ICM42688_setINT2Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch);
 void ICM42688_setFIFOMode(ICM42688_t *hicm, ICM42688_FIFO_MODE_t mode);
 void ICM42688_setFIFOWatermark(ICM42688_t *hicm, uint16_t watermark);
+void ICM42688_setGyroUIFiltBandwidth(ICM42688_t *hicm, ICM42688_GYRO_UI_FILT_BW_t bw);
+void ICM42688_setGyroUIFiltOrder(ICM42688_t *hicm, ICM42688_GYRO_UI_FILT_ORD_t ord);
 /* Filtering */
 void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
