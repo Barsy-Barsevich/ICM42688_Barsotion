@@ -135,7 +135,7 @@ void FFT_Windowing(uint8_t windowType, uint8_t dir)
 			weighingFactor = 0.54 * (1.0 - cos(twoPi * ratio));
 			break;
 		case FFT_WIN_TYP_TRIANGLE: // triangle (Bartlett)
-			weighingFactor = 1.0 - ((2.0 * abs(indexMinusOne - (samplesMinusOne / 2.0))) / samplesMinusOne);
+			weighingFactor = 1.0 - ((2.0 * fabs(indexMinusOne - (samplesMinusOne / 2.0))) / samplesMinusOne);
 			break;
 		case FFT_WIN_TYP_NUTTALL: // nuttall
 			weighingFactor = 0.355768 - (0.487396 * (cos(twoPi * ratio))) + (0.144232 * (cos(fourPi * ratio))) - (0.012604 * (cos(sixPi * ratio)));
