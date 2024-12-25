@@ -4,10 +4,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "ICM42688_Barsotion.h"
-#include "ICM42688_Interface.h"
+#include "../src/ICM42688_Barsotion.h"
 
-#include "ICM42688_RegMap.h"
 #include "freertos/projdefs.h"
 #include "hal/gpio_types.h"
 #include "hal/spi_types.h"
@@ -59,7 +57,7 @@ void IRAM_ATTR IMU_IRQ_process(void *pvParameters)
 static float vReal[4096];
 static float vImag[4096];
 
-#include "microFFT.h"
+#include "../src/microFFT.h"
 void spectreGyro()
 {
 	ICM42688_setGyroUIFiltBandwidth(&hicm, GYRO_BW_MAX_400HZ_ODR_DIV16);
