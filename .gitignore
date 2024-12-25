@@ -2,3 +2,4 @@ sdkconfig*
 build/*
 dependencies.lock
 docs/*.xcf
+CMakeLists.txt
