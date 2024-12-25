@@ -81,11 +81,11 @@ void spectreGyro()
 	{
 		if (ICM42688_FIFO_THS_IRQ_Check(&hicm))
 		{
-			counter += 1;
 			ICM42688_readFIFO(&hicm, raw_data);
 			ICM42688_calculateGyro(&hicm, raw_data);
 			vReal[counter] = hicm.gyro.x;
 			vImag[counter] = 0.0;
+			counter += 1;
 		}
 	}
 	
@@ -95,10 +95,10 @@ void spectreGyro()
     FFT_Compute(FFT_FORWARD);
     FFT_ComplexToMagnitude();
     
-    for (size_t i=0; i<iter_number; i++)
+    for (size_t i=0; i<(iter_number>>1); i++)
     {
 		float abscissa = (((float)i * freq) / iter_number);
-		if ((i % 4) == 0) printf("%f    %f\n", abscissa, vReal[i]);
+		if ((i % 8) == 1) printf("%f    %f\n", abscissa, vReal[i]);
 	}
 	
 	ICM42688_setFIFOMode(&hicm, FIFO_BYPASS_MODE);
