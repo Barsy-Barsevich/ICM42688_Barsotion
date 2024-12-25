@@ -453,3 +453,24 @@ void ICM42688_calibrateGyro(ICM42688_t *hicm)
 	ICM42688_flushFIFO(hicm);
 	ICM42688_setFIFOMode(hicm, fifo_mode);
 }
+
+
+
+void ICM42688_setGyroUIFiltBandwidth(ICM42688_t *hicm, ICM42688_GYRO_UI_FILT_BW_t bw)
+{
+	uint8_t dummy;
+	hicm->readRegister(ICM_0_GYRO_ACCEL_CONFIG0, &dummy);
+	dummy &= 0xF0;
+	dummy |= bw;
+	hicm->writeRegister(ICM_0_GYRO_ACCEL_CONFIG0, dummy);
+}
+
+
+void ICM42688_setGyroUIFiltOrder(ICM42688_t *hicm, ICM42688_GYRO_UI_FILT_ORD_t ord)
+{
+	uint8_t dummy;
+	hicm->readRegister(ICM_0_GYRO_CONFIG1, &dummy);
+	dummy &= 0xF3;
+	dummy |= ord;
+	hicm->writeRegister(ICM_0_GYRO_CONFIG1, dummy);
+}

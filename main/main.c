@@ -62,6 +62,13 @@ static float vImag[4096];
 #include "microFFT.h"
 void spectreGyro()
 {
+	ICM42688_setGyroUIFiltBandwidth(&hicm, GYRO_BW_MAX_400HZ_ODR_DIV16);
+	ICM42688_setGyroUIFiltOrder(&hicm, GYRO_UI_FILT_3RD_ORDER);
+	
+	ICM42688_regBankSelect(&hicm, 1);
+	hicm.writeRegister(ICM_1_GYRO_CONFIG_STATIC2, 3);
+	ICM42688_regBankSelect(&hicm, 0);
+	
 	const int iter_number = 4096;
 	const int freq = 4000;
 	ICM42688_FIFO_MODE_t fifo_mode = hicm.fifo_mode;
