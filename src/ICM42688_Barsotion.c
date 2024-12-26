@@ -474,3 +474,81 @@ void ICM42688_setGyroUIFiltOrder(ICM42688_t *hicm, ICM42688_GYRO_UI_FILT_ORD_t o
 	dummy |= ord;
 	hicm->writeRegister(ICM_0_GYRO_CONFIG1, dummy);
 }
+
+
+void ICM42688_gyroAntiAliasFilterEnable(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	ICM42688_regBankSelect(hicm, 1);
+	hicm->readRegister(ICM_1_GYRO_CONFIG_STATIC2, &dummy);
+	dummy &= ~(1<<ICM_GYRO_CONFIG_STATIC2_GYRO_AAF_DIS);
+	hicm->writeRegister(ICM_1_GYRO_CONFIG_STATIC2, dummy);
+	ICM42688_regBankSelect(hicm, 0);
+}
+
+
+void ICM42688_gyroAntiAliasFilterDisable(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	ICM42688_regBankSelect(hicm, 1);
+	hicm->readRegister(ICM_1_GYRO_CONFIG_STATIC2, &dummy);
+	dummy |= (1<<ICM_GYRO_CONFIG_STATIC2_GYRO_AAF_DIS);
+	hicm->writeRegister(ICM_1_GYRO_CONFIG_STATIC2, dummy);
+	ICM42688_regBankSelect(hicm, 0);
+}
+
+
+void ICM42688_gyroNotchFilterEnable(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	ICM42688_regBankSelect(hicm, 1);
+	hicm->readRegister(ICM_1_GYRO_CONFIG_STATIC2, &dummy);
+	dummy &= ~(1<<ICM_GYRO_CONFIG_STATIC2_GYRO_NF_DIS);
+	hicm->writeRegister(ICM_1_GYRO_CONFIG_STATIC2, dummy);
+	ICM42688_regBankSelect(hicm, 0);
+}
+
+
+void ICM42688_gyroNotchFilterDisable(ICM42688_t *hicm)
+{
+	uint8_t dummy;
+	ICM42688_regBankSelect(hicm, 1);
+	hicm->readRegister(ICM_1_GYRO_CONFIG_STATIC2, &dummy);
+	dummy |= (1<<ICM_GYRO_CONFIG_STATIC2_GYRO_NF_DIS);
+	hicm->writeRegister(ICM_1_GYRO_CONFIG_STATIC2, dummy);
+	ICM42688_regBankSelect(hicm, 0);
+}
+
+
+void ICM42688_gyroSetAAF_DELT(ICM42688_t *hicm, uint8_t delt)
+{
+	delt &= 0b00111111;
+	ICM42688_regBankSelect(hicm, 1);
+	hicm->writeRegister(ICM_1_GYRO_CONFIG_STATIC3, delt);
+	ICM42688_regBankSelect(hicm, 0);
+}
+
+
+void ICM42688_gyroSetAAF_DELTSQR(ICM42688_t *hicm, uint16_t deltsqr)
+{
+	ICM42688_regBankSelect(hicm, 1);
+	hicm->writeRegister(ICM_1_GYRO_CONFIG_STATIC4, deltsqr & 0xFF);
+	uint8_t dummy;
+	hicm->readRegister(ICM_1_GYRO_CONFIG_STATIC5, &dummy);
+	dummy &= 0xF0;
+	dummy |= ((deltsqr >> 8) & 0x0F);
+	hicm->writeRegister(ICM_1_GYRO_CONFIG_STATIC5, dummy);
+	ICM42688_regBankSelect(hicm, 0);
+}
+
+
+void ICM42688_gyroSetAAF_BITSHIFT(ICM42688_t *hicm, uint8_t bitshift)
+{
+	ICM42688_regBankSelect(hicm, 1);
+	uint8_t dummy;
+	hicm->readRegister(ICM_1_GYRO_CONFIG_STATIC5, &dummy);
+	dummy &= 0x0F;
+	dummy |= (bitshift << 4);
+	hicm->writeRegister(ICM_1_GYRO_CONFIG_STATIC5, dummy);
+	ICM42688_regBankSelect(hicm, 0);
+}
