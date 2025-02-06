@@ -1,6 +1,7 @@
 #include "ICM42688_Barsotion.h"
 #include "ICM42688_Interface.h"
 #include "ICM42688_RegMap.h"
+#include <math.h>
 #include <stdint.h>
 
 
@@ -418,7 +419,7 @@ void ICM42688_setFIFOWatermark(ICM42688_t *hicm, uint16_t watermark)
 
 void ICM42688_calibrateGyro(ICM42688_t *hicm)
 {
-	const int iter_number = 1000;
+	const int iter_number = 500;
 	ICM42688_FIFO_MODE_t fifo_mode = hicm->fifo_mode;
 	ICM42688_GYRO_ODR_t odr = hicm->gyro_odr;
 	ICM42688_setFIFOMode(hicm, FIFO_BYPASS_MODE);
@@ -447,6 +448,46 @@ void ICM42688_calibrateGyro(ICM42688_t *hicm)
 	hicm->gyro_bias.x = -med.x;
 	hicm->gyro_bias.y = -med.y;
 	hicm->gyro_bias.z = -med.z;
+	
+//	ICM42688_XYZ_t eps = {0};
+//	while (counter < iter_number)
+//	{
+//		if (ICM42688_FIFO_THS_IRQ_Check(hicm))
+//		{
+//			counter += 1;
+//			ICM42688_readFIFO(hicm, raw_data);
+//			ICM42688_calculateGyro(hicm, raw_data);
+//			eps.x += (med.x - hicm->gyro.x)*(med.x - hicm->gyro.x);
+//			eps.y += (med.y - hicm->gyro.y)*(med.y - hicm->gyro.y);
+//			eps.z += (med.z - hicm->gyro.z)*(med.z - hicm->gyro.z);
+//		}
+//	}
+//	eps.x /= iter_number;
+//	eps.y /= iter_number;
+//	eps.z /= iter_number;
+//	hicm->gyro_eps.x = sqrtf(eps.x);
+//	hicm->gyro_eps.y = sqrtf(eps.y);
+//	hicm->gyro_eps.z = sqrtf(eps.z);
+	counter = 0;
+	ICM42688_XYZ_t eps = {0};
+	while (counter < iter_number)
+	{
+		if (ICM42688_FIFO_THS_IRQ_Check(hicm))
+		{
+			counter += 1;
+			ICM42688_readFIFO(hicm, raw_data);
+			ICM42688_calculateGyro(hicm, raw_data);
+			eps.x += fabs(med.x - hicm->gyro.x);
+			eps.y += fabs(med.y - hicm->gyro.y);
+			eps.z += fabs(med.z - hicm->gyro.z);
+		}
+	}
+	eps.x /= iter_number;
+	eps.y /= iter_number;
+	eps.z /= iter_number;
+	hicm->gyro_eps.x = eps.x;
+	hicm->gyro_eps.y = eps.y;
+	hicm->gyro_eps.z = eps.z;
 	
 	ICM42688_setFIFOMode(hicm, FIFO_BYPASS_MODE);
 	ICM42688_setGyroODR(hicm, odr);
