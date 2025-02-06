@@ -192,6 +192,7 @@ void ICM42688_gyroSetAAF_BITSHIFT(ICM42688_t *hicm, uint8_t bitshift);
 /* Filtering */
 void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
+void ICM42688_filterGyro(ICM42688_t *hicm);
 /* Calibration */
 void ICM42688_calibrateGyro(ICM42688_t *hicm);
 /* IRQ flag status check */
