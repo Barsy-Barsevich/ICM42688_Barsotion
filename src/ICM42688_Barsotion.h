@@ -17,6 +17,7 @@
 #define FIFO_HEADER_ODR_ACCEL			1
 #define FIFO_HEADER_ODR_GYRO			0
 
+#define GYRO_ZRO_VARvsTEMP				0.005
 
 
 typedef enum __ICM42688_Interfaces
@@ -130,6 +131,8 @@ typedef struct
 	ICM42688_XYZ_t gyro_bias;
     ICM42688_XYZ_t gyro_eps;
     ICM42688_XYZ_t accel_eps;
+    float calib_temperature;
+    ICM42688_XYZ_t gyro_drift_sign;
 } ICM42688_Par_t;
 
 
@@ -155,9 +158,10 @@ typedef struct __ICM42688_Descriptor
     ICM42688_XYZ_t accel;
     ICM42688_XYZ_t gyro;
     float accel_total;
+    float temperature;
     //bias
-    ICM42688_Par_t par;
-    
+    ICM42688_Par_t _par;
+    //filters
     ICM42688_Filter_t _gyro_x_filter;
     ICM42688_Filter_t _gyro_y_filter;
     ICM42688_Filter_t _gyro_z_filter;
@@ -204,8 +208,8 @@ void ICM42688_gyroSetAAF_DELT(ICM42688_t *hicm, uint8_t delt);
 void ICM42688_gyroSetAAF_DELTSQR(ICM42688_t *hicm, uint16_t deltsqr);
 void ICM42688_gyroSetAAF_BITSHIFT(ICM42688_t *hicm, uint8_t bitshift);
 /* Filtering */
-void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
-float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
+void _ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
+float _ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
 void ICM42688_filterInit(ICM42688_t *hicm, float cycle_time);
 void ICM42688_filterGyro(ICM42688_t *hicm);
 void ICM42688_filterAccel(ICM42688_t *hicm);

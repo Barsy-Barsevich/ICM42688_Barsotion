@@ -134,6 +134,9 @@ void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw)
 	raw[0] >>= 1;
 	raw[1] >>= 1;
 	raw[2] >>= 1;
+	//temperature
+	int16_t raw_temp = (int16_t)buf[14]<<8 | (int16_t)buf[13];
+	hicm->temperature = raw_temp / 132.48 + 25.;
 }
 
 
@@ -142,9 +145,10 @@ void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw)
  */
 void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw)
 {
-	hicm->gyro.x = raw[0] * hicm->_gyro_coef + hicm->par.gyro_bias.x;
-	hicm->gyro.y = raw[1] * hicm->_gyro_coef + hicm->par.gyro_bias.y;
-	hicm->gyro.z = raw[2] * hicm->_gyro_coef + hicm->par.gyro_bias.z;
+	float temp_drift = (hicm->temperature - hicm->_par.calib_temperature) * GYRO_ZRO_VARvsTEMP;
+	hicm->gyro.x = raw[0] * hicm->_gyro_coef + hicm->_par.gyro_bias.x - temp_drift*hicm->_par.gyro_drift_sign.x;
+	hicm->gyro.y = raw[1] * hicm->_gyro_coef + hicm->_par.gyro_bias.y - temp_drift*hicm->_par.gyro_drift_sign.y;
+	hicm->gyro.z = raw[2] * hicm->_gyro_coef + hicm->_par.gyro_bias.z - temp_drift*hicm->_par.gyro_drift_sign.z;
 }
 
 /**
@@ -152,12 +156,12 @@ void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw)
  */
 void ICM42688_filterInit(ICM42688_t *hicm, float cycle_time)
 {
-	ICM42688_setFilterParameters(&(hicm->_gyro_x_filter), hicm->par.gyro_eps.x, hicm->par.gyro_eps.x, cycle_time);
-	ICM42688_setFilterParameters(&(hicm->_gyro_y_filter), hicm->par.gyro_eps.y, hicm->par.gyro_eps.y, cycle_time);
-	ICM42688_setFilterParameters(&(hicm->_gyro_z_filter), hicm->par.gyro_eps.z, hicm->par.gyro_eps.z, cycle_time);
-	ICM42688_setFilterParameters(&(hicm->_accel_x_filter), hicm->par.accel_eps.x, hicm->par.accel_eps.x, cycle_time);
-	ICM42688_setFilterParameters(&(hicm->_accel_y_filter), hicm->par.accel_eps.y, hicm->par.accel_eps.y, cycle_time);
-	ICM42688_setFilterParameters(&(hicm->_accel_z_filter), hicm->par.accel_eps.z, hicm->par.accel_eps.z, cycle_time);
+	_ICM42688_setFilterParameters(&(hicm->_gyro_x_filter), hicm->_par.gyro_eps.x, hicm->_par.gyro_eps.x, cycle_time);
+	_ICM42688_setFilterParameters(&(hicm->_gyro_y_filter), hicm->_par.gyro_eps.y, hicm->_par.gyro_eps.y, cycle_time);
+	_ICM42688_setFilterParameters(&(hicm->_gyro_z_filter), hicm->_par.gyro_eps.z, hicm->_par.gyro_eps.z, cycle_time);
+	_ICM42688_setFilterParameters(&(hicm->_accel_x_filter), hicm->_par.accel_eps.x, hicm->_par.accel_eps.x, cycle_time);
+	_ICM42688_setFilterParameters(&(hicm->_accel_y_filter), hicm->_par.accel_eps.y, hicm->_par.accel_eps.y, cycle_time);
+	_ICM42688_setFilterParameters(&(hicm->_accel_z_filter), hicm->_par.accel_eps.z, hicm->_par.accel_eps.z, cycle_time);
 }
 
 /**
@@ -165,9 +169,9 @@ void ICM42688_filterInit(ICM42688_t *hicm, float cycle_time)
  */
 void ICM42688_filterGyro(ICM42688_t *hicm)
 {
-	hicm->gyro.x = ICM42688_Filtered(&(hicm->_gyro_x_filter), hicm->gyro.x);
-	hicm->gyro.y = ICM42688_Filtered(&(hicm->_gyro_y_filter), hicm->gyro.y);
-	hicm->gyro.z = ICM42688_Filtered(&(hicm->_gyro_z_filter), hicm->gyro.z);
+	hicm->gyro.x = _ICM42688_Filtered(&(hicm->_gyro_x_filter), hicm->gyro.x);
+	hicm->gyro.y = _ICM42688_Filtered(&(hicm->_gyro_y_filter), hicm->gyro.y);
+	hicm->gyro.z = _ICM42688_Filtered(&(hicm->_gyro_z_filter), hicm->gyro.z);
 }
 
 /**
@@ -175,9 +179,9 @@ void ICM42688_filterGyro(ICM42688_t *hicm)
  */
 void ICM42688_filterAccel(ICM42688_t *hicm)
 {
-	hicm->accel.x = ICM42688_Filtered(&(hicm->_accel_x_filter), hicm->accel.x);
-	hicm->accel.y = ICM42688_Filtered(&(hicm->_accel_y_filter), hicm->accel.y);
-	hicm->accel.z = ICM42688_Filtered(&(hicm->_accel_z_filter), hicm->accel.z);
+	hicm->accel.x = _ICM42688_Filtered(&(hicm->_accel_x_filter), hicm->accel.x);
+	hicm->accel.y = _ICM42688_Filtered(&(hicm->_accel_y_filter), hicm->accel.y);
+	hicm->accel.z = _ICM42688_Filtered(&(hicm->_accel_z_filter), hicm->accel.z);
 }
 
 /**
@@ -448,6 +452,7 @@ void ICM42688_calibrateGyro(ICM42688_t *hicm)
 	size_t counter = 0;
 	int32_t raw_data[6];
 	ICM42688_XYZ_t med = {0};
+	float temp = 0;
 	ICM42688_setFIFOMode(hicm, FIFO_STREAM_MODE);
 	
 	while (counter < iter_number)
@@ -460,14 +465,17 @@ void ICM42688_calibrateGyro(ICM42688_t *hicm)
 			med.x += hicm->gyro.x;
 			med.y += hicm->gyro.y;
 			med.z += hicm->gyro.z;
+			temp += hicm->temperature;
 		}
 	}
 	med.x /= iter_number;
 	med.y /= iter_number;
 	med.z /= iter_number;
-	hicm->par.gyro_bias.x = -med.x;
-	hicm->par.gyro_bias.y = -med.y;
-	hicm->par.gyro_bias.z = -med.z;
+	temp /= iter_number;
+	hicm->_par.gyro_bias.x = -med.x;
+	hicm->_par.gyro_bias.y = -med.y;
+	hicm->_par.gyro_bias.z = -med.z;
+	hicm->_par.calib_temperature = temp;
 	
 	counter = 0;
 	ICM42688_XYZ_t eps = {0};
@@ -486,9 +494,9 @@ void ICM42688_calibrateGyro(ICM42688_t *hicm)
 	eps.x /= iter_number;
 	eps.y /= iter_number;
 	eps.z /= iter_number;
-	hicm->par.gyro_eps.x = sqrtf(eps.x);
-	hicm->par.gyro_eps.y = sqrtf(eps.y);
-	hicm->par.gyro_eps.z = sqrtf(eps.z);
+	hicm->_par.gyro_eps.x = sqrtf(eps.x);
+	hicm->_par.gyro_eps.y = sqrtf(eps.y);
+	hicm->_par.gyro_eps.z = sqrtf(eps.z);
 //	counter = 0;
 //	ICM42688_XYZ_t eps = {0};
 //	while (counter < iter_number)
