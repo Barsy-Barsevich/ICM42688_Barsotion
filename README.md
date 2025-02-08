@@ -4,9 +4,11 @@
 #### ``void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)``
 #### ``void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank)``
 #### ``void ICM42688_flushFIFO(ICM42688_t *hicm)``
-
+-----------
 ## Readings
-``void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf)``
+### ``void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf)``
+Reading ``WHO_AM_I`` register value.
+
 ``void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw)``
 ``void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw)``
 
