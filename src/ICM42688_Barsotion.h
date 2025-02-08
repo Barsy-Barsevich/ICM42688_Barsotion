@@ -122,6 +122,13 @@ typedef struct __Filter
 	float last_estimate;
 } ICM42688_Filter_t;
 
+typedef struct 
+{
+	ICM42688_XYZ_t gyro_bias;
+    ICM42688_XYZ_t gyro_eps;
+    ICM42688_XYZ_t accel_eps;
+} ICM42688_Par_t;
+
 
 typedef struct __ICM42688_Descriptor
 {
@@ -142,12 +149,14 @@ typedef struct __ICM42688_Descriptor
     ICM42688_XYZ_t accel;
     ICM42688_XYZ_t gyro;
     //bias
-    ICM42688_XYZ_t gyro_bias;
-    ICM42688_XYZ_t gyro_eps;
+    ICM42688_Par_t par;
     
-    ICM42688_Filter_t gyro_x_filter;
-    ICM42688_Filter_t gyro_y_filter;
-    ICM42688_Filter_t gyro_z_filter;
+    ICM42688_Filter_t _gyro_x_filter;
+    ICM42688_Filter_t _gyro_y_filter;
+    ICM42688_Filter_t _gyro_z_filter;
+    ICM42688_Filter_t _accel_x_filter;
+    ICM42688_Filter_t _accel_y_filter;
+    ICM42688_Filter_t _accel_z_filter;
     
     void (*writeRegister) (uint8_t addr, uint8_t data);
     void (*readRegister) (uint8_t reg, uint8_t *buf);
@@ -192,6 +201,7 @@ void ICM42688_gyroSetAAF_BITSHIFT(ICM42688_t *hicm, uint8_t bitshift);
 /* Filtering */
 void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float est_e, float q);
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
+void ICM42688_filterInit(ICM42688_t *hicm, float cycle_time);
 void ICM42688_filterGyro(ICM42688_t *hicm);
 /* Calibration */
 void ICM42688_calibrateGyro(ICM42688_t *hicm);
