@@ -188,6 +188,7 @@ void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw)
 	hicm->accel.x = raw[0] * hicm->_accel_coef;
 	hicm->accel.y = raw[1] * hicm->_accel_coef;
 	hicm->accel.z = raw[2] * hicm->_accel_coef;
+	hicm->accel_total = sqrtf(hicm->accel.x*hicm->accel.x + hicm->accel.y*hicm->accel.y + hicm->accel.z*hicm->accel.z);
 }
 
 
