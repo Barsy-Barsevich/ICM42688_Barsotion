@@ -175,6 +175,16 @@ void ICM42688_filterGyro(ICM42688_t *hicm)
 }
 
 /**
+ * @brief Filtering accelerometer's RMS noise
+ */
+void ICM42688_filterAccel(ICM42688_t *hicm)
+{
+	hicm->accel.x = ICM42688_Filtered(&(hicm->_accel_x_filter), hicm->accel.x);
+	hicm->accel.y = ICM42688_Filtered(&(hicm->_accel_y_filter), hicm->accel.y);
+	hicm->accel.z = ICM42688_Filtered(&(hicm->_accel_z_filter), hicm->accel.z);
+}
+
+/**
  * @brief Calculating accelerometer's data from raw
  */
 void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw)
