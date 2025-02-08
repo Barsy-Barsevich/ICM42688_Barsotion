@@ -154,6 +154,7 @@ typedef struct __ICM42688_Descriptor
     //output data
     ICM42688_XYZ_t accel;
     ICM42688_XYZ_t gyro;
+    float accel_total;
     //bias
     ICM42688_Par_t par;
     
