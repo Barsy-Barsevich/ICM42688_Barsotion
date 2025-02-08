@@ -136,10 +136,10 @@ typedef struct __ICM42688_Descriptor
     //interface
     ICM42688_Interface_t *interface;
     //coefficients
-    float gyro_coef;
-    float accel_coef;
-    size_t gyro_data_bit;
-    size_t accel_data_bit;
+    float _gyro_coef;
+    float _accel_coef;
+    size_t _gyro_data_bit;
+    size_t _accel_data_bit;
     ICM42688_ACCEL_ODR_t accel_odr;
     ICM42688_GYRO_ODR_t gyro_odr;
     ICM42688_ACCEL_FS_SEL_t accel_scale;

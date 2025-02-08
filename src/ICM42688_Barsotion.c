@@ -1,8 +1,4 @@
 #include "ICM42688_Barsotion.h"
-#include "ICM42688_Interface.h"
-#include "ICM42688_RegMap.h"
-#include <math.h>
-#include <stdint.h>
 
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
@@ -30,13 +26,13 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	
 	if (cfg->fifo.mode != FIFO_BYPASS_MODE)
 	{
-		hicm->gyro_data_bit = 19;
-		hicm->accel_data_bit = 18;
+		hicm->_gyro_data_bit = 19;
+		hicm->_accel_data_bit = 18;
 	}
 	else
 	{
-		hicm->gyro_data_bit = 16;
-		hicm->accel_data_bit = 16;
+		hicm->_gyro_data_bit = 16;
+		hicm->_accel_data_bit = 16;
 	}
 	/* Scale & ODR */
 	ICM42688_setGyroScale(hicm, cfg->gyro.scale);
@@ -146,9 +142,9 @@ void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw)
  */
 void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw)
 {
-	hicm->gyro.x = raw[0] * hicm->gyro_coef + hicm->par.gyro_bias.x;
-	hicm->gyro.y = raw[1] * hicm->gyro_coef + hicm->par.gyro_bias.y;
-	hicm->gyro.z = raw[2] * hicm->gyro_coef + hicm->par.gyro_bias.z;
+	hicm->gyro.x = raw[0] * hicm->_gyro_coef + hicm->par.gyro_bias.x;
+	hicm->gyro.y = raw[1] * hicm->_gyro_coef + hicm->par.gyro_bias.y;
+	hicm->gyro.z = raw[2] * hicm->_gyro_coef + hicm->par.gyro_bias.z;
 }
 
 /**
@@ -189,9 +185,9 @@ void ICM42688_filterAccel(ICM42688_t *hicm)
  */
 void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw)
 {
-	hicm->accel.x = raw[0] * hicm->accel_coef;
-	hicm->accel.y = raw[1] * hicm->accel_coef;
-	hicm->accel.z = raw[2] * hicm->accel_coef;
+	hicm->accel.x = raw[0] * hicm->_accel_coef;
+	hicm->accel.y = raw[1] * hicm->_accel_coef;
+	hicm->accel.z = raw[2] * hicm->_accel_coef;
 }
 
 
@@ -277,17 +273,17 @@ void ICM42688_setGyroScale(ICM42688_t *hicm, ICM42688_GYRO_FS_SEL_t scale)
 	hicm->writeRegister(ICM_0_GYRO_CONFIG0, gyro_cfg0);
 	switch (scale)
 	{
-		case GYRO_FS_SEL_2000DPS: hicm->gyro_coef = 2000; break;
-		case GYRO_FS_SEL_1000DPS: hicm->gyro_coef = 1000; break;
-		case GYRO_FS_SEL_500DPS: hicm->gyro_coef = 500; break;
-		case GYRO_FS_SEL_250DPS: hicm->gyro_coef = 250; break;
-		case GYRO_FS_SEL_125DPS: hicm->gyro_coef = 125; break;
-		case GYRO_FS_SEL_62p5DPS: hicm->gyro_coef = 62.5; break;
-		case GYRO_FS_SEL_31p25DPS: hicm->gyro_coef = 31.25; break;
-		case GYRO_FS_SEL_15p625DPS: hicm->gyro_coef = 15.625; break;
-		default: hicm->gyro_coef = 2000; break;
+		case GYRO_FS_SEL_2000DPS: hicm->_gyro_coef = 2000; break;
+		case GYRO_FS_SEL_1000DPS: hicm->_gyro_coef = 1000; break;
+		case GYRO_FS_SEL_500DPS: hicm->_gyro_coef = 500; break;
+		case GYRO_FS_SEL_250DPS: hicm->_gyro_coef = 250; break;
+		case GYRO_FS_SEL_125DPS: hicm->_gyro_coef = 125; break;
+		case GYRO_FS_SEL_62p5DPS: hicm->_gyro_coef = 62.5; break;
+		case GYRO_FS_SEL_31p25DPS: hicm->_gyro_coef = 31.25; break;
+		case GYRO_FS_SEL_15p625DPS: hicm->_gyro_coef = 15.625; break;
+		default: hicm->_gyro_coef = 2000; break;
 	}
-	hicm->gyro_coef *= powf(2.0, -(float)hicm->gyro_data_bit);
+	hicm->_gyro_coef *= powf(2.0, -(float)hicm->_gyro_data_bit);
 }
 
 
@@ -300,13 +296,13 @@ void ICM42688_setAccelScale(ICM42688_t *hicm, ICM42688_ACCEL_FS_SEL_t scale)
 	hicm->writeRegister(ICM_0_ACCEL_CONFIG0, acc_cfg0);
 	switch (scale)
 	{
-		case ACCEL_FS_SEL_16G: hicm->accel_coef = 16.; break;
-		case ACCEL_FS_SEL_8G: hicm->accel_coef = 8.; break;
-		case ACCEL_FS_SEL_4G: hicm->accel_coef = 4.; break;
-		case ACCEL_FS_SEL_2G: hicm->accel_coef = 2.; break;
-		default: hicm->accel_coef = 16.;
+		case ACCEL_FS_SEL_16G: hicm->_accel_coef = 16.; break;
+		case ACCEL_FS_SEL_8G: hicm->_accel_coef = 8.; break;
+		case ACCEL_FS_SEL_4G: hicm->_accel_coef = 4.; break;
+		case ACCEL_FS_SEL_2G: hicm->_accel_coef = 2.; break;
+		default: hicm->_accel_coef = 16.;
 	}
-	hicm->accel_coef *= powf(2.0, -(float)hicm->accel_data_bit);
+	hicm->_accel_coef *= powf(2.0, -(float)hicm->_accel_data_bit);
 }
 
 
