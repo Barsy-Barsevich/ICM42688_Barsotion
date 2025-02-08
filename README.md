@@ -12,7 +12,8 @@ Reading ``WHO_AM_I`` register value.
 Reading gyroscope's and accelerometer data via data registers. The methode uses a single byte reading function.
 ### ``void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw)``
 Reading gyroscope's and accelerometer's data via FIFO. The FIFO must be initialized before. The methode means that the FIFO packet is 20-byte size and contains 20-bit gyroscope's and accelerometer's extentions.
----
+
+---------
 ## Calculations
 ### ``void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw)``
 ### ``void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw)``
