@@ -19,8 +19,6 @@
 
 
 
-
-
 typedef enum __ICM42688_Interfaces
 {
 	Hardware_SPI,
@@ -28,7 +26,9 @@ typedef enum __ICM42688_Interfaces
 } ICM42688_InterfaceProtocol_t;
 
 
-typedef struct
+//==============================================================================
+//--<Config>--------------------------------------------------------------------
+typedef struct __ICM42688_InterruptConfig
 {
 	ICM42688_UI_DRDY_INT_CLEAR_t drdy_int_clear;
 	ICM42688_FIFO_THS_INT_CLEAR_t fifo_ths_int_clear;
@@ -38,7 +38,7 @@ typedef struct
 } ICM42688_INT_Config_t;
 
 
-typedef struct
+typedef struct __ICM42688_InterruptChannelConfig
 {
 	int pin;
 	ICM42688_INT_MODE_t mode;
@@ -59,7 +59,7 @@ typedef struct
 } ICM42688_INT_Channel_Config_t;
 
 
-typedef struct __ICM42688_CONFIG
+typedef struct __ICM42688_Config
 {
 	ICM42688_InterfaceProtocol_t protocol;
 	ICM42688_Interface_t interface_descriptor;
@@ -107,7 +107,10 @@ typedef struct __ICM42688_CONFIG
 } ICM42688_Config_t;
 
 
-typedef struct
+//==============================================================================
+//--<Parameters>----------------------------------------------------------------
+
+typedef struct __ICM42688_XYZ
 {
 	float x;
 	float y;
@@ -129,6 +132,9 @@ typedef struct
     ICM42688_XYZ_t accel_eps;
 } ICM42688_Par_t;
 
+
+//==============================================================================
+//--<Descriptor>----------------------------------------------------------------
 
 typedef struct __ICM42688_Descriptor
 {
@@ -163,10 +169,8 @@ typedef struct __ICM42688_Descriptor
 } ICM42688_t;
 
 
-
-
-
-
+//==============================================================================
+//--<Functions>-----------------------------------------------------------------
 
 void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg);
 void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank);
