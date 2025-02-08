@@ -203,6 +203,7 @@ void ICM42688_setFilterParameters(ICM42688_Filter_t *channel, float mea_e, float
 float ICM42688_Filtered(ICM42688_Filter_t *channel, float value);
 void ICM42688_filterInit(ICM42688_t *hicm, float cycle_time);
 void ICM42688_filterGyro(ICM42688_t *hicm);
+void ICM42688_filterAccel(ICM42688_t *hicm);
 /* Calibration */
 void ICM42688_calibrateGyro(ICM42688_t *hicm);
 /* IRQ flag status check */
