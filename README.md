@@ -1,9 +1,9 @@
 # ICM42688 Barsotion ESP32 driver
 ![image info](./docs/pic3.png)
 
-#### ``void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)``
-#### ``void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank)``
-#### ``void ICM42688_flushFIFO(ICM42688_t *hicm)``
+### ``void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)``
+### ``void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank)``
+### ``void ICM42688_flushFIFO(ICM42688_t *hicm)``
 -----------
 ## Readings
 ### ``void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf)``
@@ -16,13 +16,19 @@ Reading gyroscope's and accelerometer's data via FIFO. The FIFO must be initiali
 ---------
 ## Calculations
 ### ``void ICM42688_calculateGyro(ICM42688_t *hicm, int32_t *raw)``
+Converts raw gyroscope's data into degrees values. Substracts the offsets and corrects results with temperature.
 ### ``void ICM42688_calculateAccel(ICM42688_t *hicm, int32_t *raw)``
+Converts raw accelerometer's data into g-values.
 
 ## Settings
 ### ``void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr)``
+Sets gyroscope's output data rate.
 ### ``void ICM42688_setAccelODR(ICM42688_t *hicm, ICM42688_ACCEL_ODR_t odr)``
+Sets accelerometer's output data rate.
 ### ``void ICM42688_setGyroScale(ICM42688_t *hicm, ICM42688_GYRO_FS_SEL_t scale)``
+Sets gyroscope's scale (15.625-2000 deg/s).
 ### ``void ICM42688_setAccelScale(ICM42688_t *hicm, ICM42688_ACCEL_FS_SEL_t scale)``
+Sets accelerometer's scale (2-16 g).
 ### ``void ICM42688_setInterruptConfig(ICM42688_t *hicm, ICM42688_INT_Config_t *cfg)``
 ### ``void ICM42688_setINT1Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)``
 ### ``void ICM42688_setINT2Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)``
