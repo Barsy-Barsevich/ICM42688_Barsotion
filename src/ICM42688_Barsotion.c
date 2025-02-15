@@ -135,8 +135,8 @@ void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw)
 	raw[1] >>= 1;
 	raw[2] >>= 1;
 	//temperature
-	int16_t raw_temp = (int16_t)buf[14]<<8 | (int16_t)buf[13];
-	hicm->temperature = raw_temp / 132.48 + 25.;
+	int16_t raw_temp = (int16_t)buf[13]<<8 | (int16_t)buf[14];
+	hicm->temperature = (float)raw_temp;
 }
 
 
