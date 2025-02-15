@@ -4,3 +4,4 @@ dependencies.lock
 docs/*.xcf
 CMakeLists.txt
 main/*
+/build/
