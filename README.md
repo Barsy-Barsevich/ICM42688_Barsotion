@@ -22,13 +22,56 @@ Converts raw accelerometer's data into g-values.
 
 ## Settings
 ### ``void ICM42688_setGyroODR(ICM42688_t *hicm, ICM42688_GYRO_ODR_t odr)``
-Sets gyroscope's output data rate.
+Sets gyroscope's output data rate. Allowed values:
+- `GYRO_ODR_32KHZ`
+- `GYRO_ODR_16KHZ`
+- `GYRO_ODR_8KHZ`
+- `GYRO_ODR_4KHZ`
+- `GYRO_ODR_2KHZ`
+- `GYRO_ODR_1KHZ`
+- `GYRO_ODR_500HZ`
+- `GYRO_ODR_200HZ`
+- `GYRO_ODR_100HZ`
+- `GYRO_ODR_50HZ`
+- `GYRO_ODR_25HZ`
+- `GYRO_ODR_12p5HZ`
+
 ### ``void ICM42688_setAccelODR(ICM42688_t *hicm, ICM42688_ACCEL_ODR_t odr)``
-Sets accelerometer's output data rate.
+Sets accelerometer's output data rate. Allowed values:
+- `ACCEL_ODR_32KHZ`
+- `ACCEL_ODR_16KHZ`
+- `ACCEL_ODR_8KHZ`
+- `ACCEL_ODR_4KHZ`
+- `ACCEL_ODR_2KHZ`
+- `ACCEL_ODR_1KHZ`
+- `ACCEL_ODR_500HZ`
+- `ACCEL_ODR_200HZ`
+- `ACCEL_ODR_100HZ`
+- `ACCEL_ODR_50HZ`
+- `ACCEL_ODR_25HZ`
+- `ACCEL_ODR_12p5HZ`
+- `ACCEL_ODR_6p25HZ`
+- `ACCEL_ODR_3p125HZ`
+- `ACCEL_ODR_1p5625HZ`
+
 ### ``void ICM42688_setGyroScale(ICM42688_t *hicm, ICM42688_GYRO_FS_SEL_t scale)``
-Sets gyroscope's scale (15.625-2000 deg/s).
+Sets gyroscope's scale (15.625-2000 deg/s). Allowed values:
+- `GYRO_FS_SEL_2000DPS`
+- `GYRO_FS_SEL_1000DPS`
+- `GYRO_FS_SEL_500DPS`
+- `GYRO_FS_SEL_250DPS`
+- `GYRO_FS_SEL_125DPS`
+- `GYRO_FS_SEL_62p5DPS`
+- `GYRO_FS_SEL_31p25DPS`
+- `GYRO_FS_SEL_15p625DPS`
+
 ### ``void ICM42688_setAccelScale(ICM42688_t *hicm, ICM42688_ACCEL_FS_SEL_t scale)``
-Sets accelerometer's scale (2-16 g).
+Sets accelerometer's scale (2-16 g). Allowed values:
+- `ACCEL_FS_SEL_16G`
+- `ACCEL_FS_SEL_8G`
+- `ACCEL_FS_SEL_4G`
+- `ACCEL_FS_SEL_2G`
+
 ### ``void ICM42688_setInterruptConfig(ICM42688_t *hicm, ICM42688_INT_Config_t *cfg)``
 ### ``void ICM42688_setINT1Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)``
 ### ``void ICM42688_setINT2Config(ICM42688_t *hicm, ICM42688_INT_Channel_Config_t *ch)``
