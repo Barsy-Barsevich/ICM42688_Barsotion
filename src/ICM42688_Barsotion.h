@@ -20,6 +20,10 @@
 #define GYRO_ZRO_VARvsTEMP				0.005
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum __ICM42688_Interfaces
 {
 	Hardware_SPI,
@@ -224,4 +228,6 @@ bool ICM42688_FIFO_THS_IRQ_Check(ICM42688_t *hicm);
 bool ICM42688_FIFO_FULL_IRQ_Check(ICM42688_t *hicm);
 bool ICM42688_AGC_RDY_IRQ_IRQ_Check(ICM42688_t *hicm);
 
-
+#ifdef __cplusplus
+}
+#endif
