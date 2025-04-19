@@ -7,3 +7,4 @@
 
 - [ ] Add library recursive calibration method
 - [ ] Clean examples
+- [ ] Create methods descriptions
