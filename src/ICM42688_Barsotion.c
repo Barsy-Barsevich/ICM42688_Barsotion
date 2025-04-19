@@ -26,8 +26,8 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	
 	if (cfg->fifo.mode != FIFO_BYPASS_MODE)
 	{
-		hicm->_gyro_data_bit = 19;
-		hicm->_accel_data_bit = 18;
+		hicm->_gyro_data_bit = 20;
+		hicm->_accel_data_bit = 20;
 	}
 	else
 	{
@@ -128,12 +128,12 @@ void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw)
 	raw[0] |= (buf[17] & 0x0F);
 	raw[1] |= (buf[18] & 0x0F);
 	raw[2] |= (buf[19] & 0x0F);
-	raw[3] >>= 1;
-	raw[4] >>= 1;
-	raw[5] >>= 1;
-	raw[0] >>= 1;
-	raw[1] >>= 1;
-	raw[2] >>= 1;
+//	raw[3] >>= 1;
+//	raw[4] >>= 1;
+//	raw[5] >>= 1;
+//	raw[0] >>= 1;
+//	raw[1] >>= 1;
+//	raw[2] >>= 1;
 	//temperature
 	int16_t raw_temp = (int16_t)buf[13]<<8 | (int16_t)buf[14];
 	hicm->temperature = (float)raw_temp;
@@ -288,7 +288,7 @@ void ICM42688_setGyroScale(ICM42688_t *hicm, ICM42688_GYRO_FS_SEL_t scale)
 		case GYRO_FS_SEL_15p625DPS: hicm->_gyro_coef = 15.625; break;
 		default: hicm->_gyro_coef = 2000; break;
 	}
-	hicm->_gyro_coef *= powf(2.0, -(float)hicm->_gyro_data_bit);
+	hicm->_gyro_coef *= powf(2.0, -(float)hicm->_gyro_data_bit+1);
 }
 
 
@@ -307,7 +307,7 @@ void ICM42688_setAccelScale(ICM42688_t *hicm, ICM42688_ACCEL_FS_SEL_t scale)
 		case ACCEL_FS_SEL_2G: hicm->_accel_coef = 2.; break;
 		default: hicm->_accel_coef = 16.;
 	}
-	hicm->_accel_coef *= powf(2.0, -(float)hicm->_accel_data_bit);
+	hicm->_accel_coef *= powf(2.0, -(float)hicm->_accel_data_bit+1);
 }
 
 
