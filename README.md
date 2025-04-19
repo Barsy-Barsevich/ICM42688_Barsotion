@@ -1,5 +1,5 @@
 # ICM42688 Barsotion ESP32 driver
-![image info](./docs/pic3.png)
+![image info](./docs/pic4.png)
 
 [Methods descriptions](./methods_descriptions.md)
 
