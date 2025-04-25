@@ -3,6 +3,11 @@
 
 [Methods descriptions](./methods_descriptions.md)
 
+[ICM-42688-P Barsotion devboard](https://github.com/Barsy-Barsevich/Barsotion-AH1)
+
+## Contacts for Q&A
+Email: barsotion@yandex.ru
+Telegram: @barsybarsevich
 ## TODO
 
 - [ ] Add library recursive calibration method
