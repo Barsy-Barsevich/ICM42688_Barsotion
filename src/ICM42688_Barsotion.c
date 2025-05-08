@@ -1,7 +1,8 @@
 #include "ICM42688_Barsotion.h"
+#include <stdint.h>
 
 
-void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
+bool ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 {
 	if (cfg->protocol == Hardware_SPI)
 	{
@@ -15,6 +16,13 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	{
 		hicm->writeRegister = ICM42688_I2C_writeRegister;
 		hicm->readRegister = ICM42688_I2C_readRegister;
+	}
+	
+	uint8_t dummy;
+	ICM42688_readWhoAmI(hicm, &dummy);
+	if (dummy != 0x47)
+	{
+		return false;
 	}
 	
 	//Сделать по умолчанию оси выключенными
@@ -47,6 +55,8 @@ void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg)
 	ICM42688_flushFIFO(hicm);
 	ICM42688_setFIFOMode(hicm, cfg->fifo.mode);
 	ICM42688_setFIFOWatermark(hicm, cfg->fifo.watermark);
+	
+	return true;
 }
 
 /**
