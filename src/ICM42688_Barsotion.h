@@ -181,7 +181,7 @@ typedef struct __ICM42688_Descriptor
 //==============================================================================
 //--<Functions>-----------------------------------------------------------------
 
-void ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg);
+bool ICM42688_Init(ICM42688_t *hicm, ICM42688_Config_t *cfg);
 void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank);
 void ICM42688_flushFIFO(ICM42688_t *hicm);
 /* Readings */
