@@ -1,4 +1,5 @@
 #include "ICM42688_Barsotion.h"
+#include "ICM42688_RegMap.h"
 #include <stdint.h>
 
 
@@ -72,6 +73,14 @@ void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank)
 void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf)
 {
 	hicm->readRegister(ICM_0_WHO_AM_I, buf);
+}
+
+
+void ICM42688_setCLOCKIN(ICM42688_t *hicm, uint8_t val)
+{
+	ICM42688_regBankSelect(hicm, 1);
+	hicm->writeRegister(ICM_1_INTF_CONFIG5, val);
+	ICM42688_regBankSelect(hicm, 0);
 }
 
 

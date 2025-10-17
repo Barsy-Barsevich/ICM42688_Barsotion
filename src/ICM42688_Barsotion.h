@@ -186,6 +186,7 @@ void ICM42688_regBankSelect(ICM42688_t *hicm, uint8_t bank);
 void ICM42688_flushFIFO(ICM42688_t *hicm);
 /* Readings */
 void ICM42688_readWhoAmI(ICM42688_t *hicm, uint8_t *buf);
+void ICM42688_setCLOCKIN(ICM42688_t *hicm, uint8_t val);
 void ICM42688_readRegAG(ICM42688_t *hicm, int32_t *raw);
 void ICM42688_readFIFO(ICM42688_t *hicm, int32_t *raw);
 /* Calculations */
@@ -231,3 +232,4 @@ bool ICM42688_AGC_RDY_IRQ_IRQ_Check(ICM42688_t *hicm);
 #ifdef __cplusplus
 }
 #endif
+
